@@ -1,0 +1,1 @@
+<input type= 'text' class="form-control" name  = 'codigo' id='codigo' readonly='readonly' value = '{{$consultaCodigo->codigo}}'>

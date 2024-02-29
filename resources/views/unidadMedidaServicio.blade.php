@@ -1,0 +1,2 @@
+<div><b>*Unidad de medida:</b></div>
+{{Form::text('observacionCantidad',$unidadMedida->unidadMedida,['class' => 'form-control rounded-0','placeholder' => 'Ejemplo: personas, horas etc.','id'=>'obs','onblur'=>'calcularPorcentaje()','readonly'])}}

@@ -1,0 +1,1 @@
+<input type= 'text' class="form-control" name  = 'GCMid' id='GCMid' readonly='readonly' value = '{{$gcmid2}}'>

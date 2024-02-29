@@ -1,0 +1,1 @@
+{{Form::text('codigoOrden',$folio,['class' => 'form-control', 'readonly','id'=>'codigoOrden'])}}

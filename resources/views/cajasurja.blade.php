@@ -1,0 +1,1 @@
+<input type= 'text' class="form-control" name  = 'folioRecepcion' id='folioRecepcion' readonly='readonly' value = ' {{$foliosurja}}'>

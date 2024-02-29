@@ -1,0 +1,1 @@
+{{Form::text('modelo',$modeloParte->modelo,['class' => 'form-control rounded-0','id'=>'modelo','onblur'=>'calcularFinanciamiento()','readonly'])}}

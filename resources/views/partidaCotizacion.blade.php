@@ -1,0 +1,1 @@
+<input type="text" name="partida" id="partida" value="{{$partidaSiguiente}}">

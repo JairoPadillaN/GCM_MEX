@@ -1,0 +1,1 @@
+<input type= 'text' class="form-control" name  = 'precioVentaDol' id='precioVentaDol' readonly='readonly' value = '{{$consultaDolares->precioVentaDol}}'>

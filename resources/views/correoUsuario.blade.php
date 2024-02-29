@@ -1,0 +1,1 @@
+<input type="text" id="correo" name="correo" value="{{$consultaCorreo->correo}}">

@@ -1,0 +1,1446 @@
+@extends('principal')
+@section('contenido')
+
+<script type="text/javascript">
+$(document).ready(function() {
+    $(".cargar").click();
+});
+</script>
+
+{{Form::open(['route' => 'editarEquipos','files'=>true])}}
+{{Form::token()}}
+<div class="col-xs-12">
+    <div class="panel panel-default" style="margin-top:-55px">
+        <div class="panel-heading">
+            <h1>Reporte de la empresa <small style="color:#FF0000;">{{$consultap->razonSocial}}</small></h1><br><br>
+            <div class="card-title">
+                <div class="title">Ingrese los datos del equipo recibido</div>
+            </div>
+        </div>
+
+        <div class="panel-body">
+            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                <li class="nav-item">
+                    <a class="cargar" class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home"
+                        role="tab" aria-controls="pills-home" aria-selected="true">Datos de
+                        recepción</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab"
+                        aria-controls="pills-profile" aria-selected="false">Datos del equipo</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab"
+                        aria-controls="pills-contact" aria-selected="false">Archivos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#piezas" role="tab"
+                        aria-controls="pills-contact" aria-selected="false">División de piezas</a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#detalleCotizacion" role="tab"
+                        aria-controls="pills-contact" aria-selected="false">Detalle de cotización</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#archivosFactura" role="tab"
+                        aria-controls="pills-contact" aria-selected="false">Archivos de servicio</a>
+                </li>
+            </ul>
+
+            <div class="tab-content" id="pills-tabContent">
+
+                <!--Primer tab Datos de Factura --->
+                <div class="tab-pane fade" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                    <div class="form-group col-md-6">
+                        {{Form::hidden('idEquipos',$consulta->idEquipos)}}
+
+                        <div class="sub-title">Empresa que da seguimiento:</div>
+                        <div>
+                            {{Form::text('nombreEmpresa',$consulta->nombreEmpresa,['class' => 'form-control','readonly'=>'readonly'])}}
+                        </div>
+
+                        <div class="sub-title">* Folio recepcion de equipo:</div>
+                        <div>
+                            @if($errors->first('folioRecepcion'))
+                            <i> {{ $errors->first('folioRecepcion') }}</i>
+                            @endif
+                            <div id='divRadioGCM'>
+                                <input class="form-control" type='text' name='folioRecepcion' id='folioRecepcion'
+                                    readonly='readonly' value="{{$consulta->folioRecepcion}}">
+                            </div>
+                        </div>
+
+                        <div class="sub-title">Registrado por:</div>
+                        <div>
+                            <input type='hidden' name='idu' id='idu' value="{!! Session::get('sesionidu')!!}">
+                            <input type="text" name="usuarioEquipos" class="form-control" readonly="true" value="{!! Session::get('sesionname')!!} {!! Session::get('sesionpaterno')!!} {!!
+                              Session::get('sesionmaterno')!!}">
+                        </div>
+
+                        <div class="sub-title">* Fecha de recolección: </div>
+                        <div>
+                            @if($errors->first('fechaRecoleccion'))
+                            <i> {{ $errors->first('fechaRecoleccion') }}</i>
+                            @endif
+                            {{Form::text('fechaRecoleccion',$consulta->fechaRecoleccion,['class' => 'form-control','readonly'=>'readonly'])}}
+                        </div>
+
+                        <div class="sub-title">* Fecha de registro: </div>
+                        <div>
+                            @if($errors->first('fechaRegistro'))
+                            <i> {{ $errors->first('fechaRegistro') }}</i>
+                            @endif
+                            {{Form::text('fechaRegistro',$consulta->fechaRegistro,['class' => 'form-control','readonly'=>'readonly'])}}
+                        </div>
+                        <div class="sub-title">* Importancia:</div>
+                        @if($errors->first('importancia'))
+                        <i> {{ $errors->first('importancia') }}</i>
+                        @endif
+                        <div>
+                            {{Form::text('importancia',$consulta->importancia,['class' => 'form-control','readonly'=>'readonly'])}}
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <form action="" method="post">
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <div class="sub-title">* Cliente:</div>
+                                    <div>
+                                        @if($errors->first('idc'))
+                                        <i> {{ $errors->first('idc') }}</i>
+                                        @endif
+                                        <select name='idc' id='idc' class="form-control">
+                                            <option value='{{$idclientesel}}'>{{$nomcli}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <div class="sub-title">* Sucursal:</div>
+                                    @if($errors->first('idSucursal'))
+                                    <i> {{ $errors->first('idSucursal') }}</i>
+                                    @endif
+                                    <div>
+                                        <select name='idSucursal' id="idp" class="form-control">
+                                            <option value='{{$idSucursalSel}}'>{{$nomSuc}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <div id='divinfo' class="alert alert-info">
+                            Cliente: {{$nomcli}} ------- Sucursal: {{$nomSuc}}
+                        </div>
+
+                        <div class="sub-title">* Persona que entrega:</div>
+                        <div>
+                            @if($errors->first('personaEntrega'))
+                            <i> {{ $errors->first('personaEntrega') }}</i>
+                            @endif
+                            {{Form::text('personaEntrega',$consulta->personaEntrega,['class' => 'form-control', 'placeholder' => 'Ejemplo: Luis Sánchez Júarez','readonly'=>'readonly'])}}
+                        </div>
+
+                        <div class="sub-title">* Persona que recibe:</div>
+                        <div>
+                            @if($errors->first('personaRecibe'))
+                            <i> {{ $errors->first('personaRecibe') }}</i>
+                            @endif
+                            {{Form::text('personaRecibe',$consulta->personaRecibe,['class' => 'form-control', 'placeholder' => 'Ejemplo: Jorge Cisneros Hernández','readonly'=>'readonly'])}}
+                        </div>
+                        <div class="sub-title">Número de documento salida cliente:</div>
+                        <div>
+                            @if($errors->first('numeroDocumentoSalida'))
+                            <i> {{ $errors->first('numeroDocumentoSalida') }}</i>
+                            @endif
+                            {{Form::text('numeroDocumentoSalida',$consulta->numeroDocumentoSalida,['class' => 'form-control', 'placeholder' => 'Ejemplo: 00001203','readonly'=>'readonly'])}}
+                        </div>
+
+                        <div class="form-group col-md-8">
+
+                            @foreach($carchivoValeSalida as $cas)
+                            @if($cas->archivoValeSalida=='Sin archivo')
+                            <div class="sub-title">Subir Vale de salida cliente:</div>
+                            <div>
+                                @if($errors->first('archivoValeSalida'))
+                                <i> {{ $errors->first('archivoValeSalida') }}</i>
+                                @endif
+                                {{Form::file('archivoValeSalida',['class' => 'form-control'])}}
+                            </div>
+                            @else
+                            <div class="sub-title">Actualizar Vale de salida cliente:</div>
+                            <div>
+                                @if($errors->first('archivoValeSalida'))
+                                <i> {{ $errors->first('archivoValeSalida') }}</i>
+                                @endif
+                                {{Form::file('archivoValeSalida',['class' => 'form-control'])}}
+                            </div>
+                            @endif
+                            @endforeach
+
+                            <br><br>
+
+                            @foreach($carchivoDocumentoSalida as $cads)
+                            @if($cads->archivoDocumentoSalida=='Sin archivo')
+                            <div class="sub-title">Subir documento de salida cliente:</div>
+                            <div>
+                                @if($errors->first('archivoDocumentoSalida'))
+                                <i> {{ $errors->first('archivoDocumentoSalida') }}</i>
+                                @endif
+                                {{Form::file('archivoDocumentoSalida',['class' => 'form-control'])}}
+                            </div>
+                            @else
+                            <div class="sub-title">Actualizar documento de salida cliente:</div>
+                            <div>
+                                @if($errors->first('archivoDocumentoSalida'))
+                                <i> {{ $errors->first('archivoDocumentoSalida') }}</i>
+                                @endif
+                                {{Form::file('archivoDocumentoSalida',['class' => 'form-control'])}}
+                            </div>
+                            @endif
+                            @endforeach
+
+                        </div>
+                        <div class="form-group col-md-4">
+                            <div>
+                                <center>
+                                    <div style='text-align'>
+                                        @foreach($carchivoValeSalida as $dvs)
+                                        @if($dvs->archivoValeSalida=='Sin archivo' ||
+                                        $dvs->archivoValeSalida=='')
+                                        <br><br>
+                                        <img src="{{asset('img/descargano.png')}}" height=50 width=50>
+                                        @else
+                                        <br>
+                                        <a href="{{asset('archivos/'.$dvs->archivoValeSalida)}}" target="_blank">
+                                            <img src="{{asset('img/descarga.png')}}" target="_blank" height=50
+                                                width=50>
+                                            <h6>Descargar vale de salida</h6>
+                                        </a>
+                                        @endif
+                                        @endforeach
+                                    </div>
+                                </center>
+                            </div>
+                            <div>
+                                <center>
+                                    <div style='text-align'>
+                                        @foreach($carchivoDocumentoSalida as $ds)
+                                        @if($ds->archivoDocumentoSalida=='Sin archivo' ||
+                                        $ds->archivoDocumentoSalida=='')
+                                        <br><br>
+                                        <img src="{{asset('img/descargano.png')}}" height=50 width=50>
+                                        @else
+                                        <br>
+                                        <a href="{{asset('archivos/'.$ds->archivoDocumentoSalida)}}"
+                                            target="_blank">
+                                            <img src="{{asset('img/descarga.png')}}" height=50 width=50>
+                                            <h6>Descargar documento de salida</h6>
+                                        </a>
+                                        @endif
+                                        @endforeach
+                                    </div>
+                                </center>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Segundo tab Datos de pago --->
+                <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+                    <div class="form-group col-md-6">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="sub-title">* GCMid:</div>
+                                @if($errors->first('GCMid'))
+                                <i> {{ $errors->first('GCMid') }}</i>
+                                @endif
+                                <div id='divgcmid'>
+                                    <input class="form-control" type='text' name='GCMid' id='GCMid'
+                                        value="{{$consulta->GCMid}}" readonly='readonly'>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="sub-title">* Complemento del GCMid:</div>
+                                @if($errors->first('complementoGCMid'))
+                                <i> {{ $errors->first('complementoGCMid') }}</i>
+                                @endif
+                                <input class="form-control" type='text' name='complementoGCMid'
+                                    value="{{$consulta->complementoGCMid}}" placeholder="Ejemplo: 276381"
+                                    readonly='readonly'>
+                            </div>
+                        </div>
+
+                        <div class="sub-title">* Tipo:</div>
+                        @if($errors->first('idTipoEquipo'))
+                        <i> {{ $errors->first('idTipoEquipo') }}</i>
+                        @endif
+                        <div>
+                            <select name='idTipoEquipo' id='idTipoEquipo' class="form-control">
+                                <option value='{{$idTipoSel}}'>{{$nomTipo}}</option>
+                            </select>
+                        </div>
+                        <div class="sub-title">* Subtipo:</div>
+                        @if($errors->first('idSubtipoEquipo'))
+                        <i> {{ $errors->first('idSubtipoEquipo') }}</i>
+                        @endif
+                        <div>
+                            <select name='idSubtipoEquipo' id='idSubtipoEquipo' class="form-control">
+                                <option value='{{$idSubtipoSel}}'>{{$nomSubtipo}}</option>
+                            </select>
+                        </div>
+                        <div class="sub-title">* Serie:</div>
+                        <div>
+                            @if($errors->first('serie'))
+                            <i> {{ $errors->first('serie') }}</i>
+                            @endif
+                            {{Form::text('serie',$consulta->serie,['class' => 'form-control', 'placeholder' => 'Ejemplo: 00001203','readonly'=>'readonly'])}}
+                        </div>
+                        <div class="sub-title">Datos para certificado:</div>
+                        <div>
+                            {{Form::textarea('datosCertificado',$consulta->datosCertificado,['class' => 'form-control','readonly'=>'readonly'])}}
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <div class="sub-title">* Marca:</div>
+                        <div>
+                            @if($errors->first('marca'))
+                            <i> {{ $errors->first('marca') }}</i>
+                            @endif
+                            {{Form::text('marca',$consulta->marca,['class' => 'form-control', 'placeholder' => 'Ejemplo: LouisV','readonly'=>'readonly'])}}
+                        </div>
+                        <div class="sub-title">* Modelo:</div>
+                        <div>
+                            @if($errors->first('modelo'))
+                            <i> {{ $errors->first('modelo') }}</i>
+                            @endif
+                            {{Form::text('modelo',$consulta->modelo,['class' => 'form-control', 'placeholder' => 'Ejemplo: 206','readonly'=>'readonly'])}}
+                        </div>
+
+                        <div class="sub-title">* Estatus:</div>
+                        <div>
+                            @if($errors->first('estatus'))
+                            <p><i> {{ $errors->first('estatus') }}</i></p>
+                            @endif
+                            <select name="estatus" class="form-control">
+                                <option value="<?php echo ($consulta->estatus) ?>">
+                                    <?php echo ($consulta->estatus) ?></option>
+                            </select>
+                        </div>
+                        <div class="sub-title">Recurso:</div>
+                        <div>
+                            {{Form::text('recurso',$consulta->recurso,['class' => 'form-control','readonly'=>'readonly'])}}
+                        </div>
+                        <div class="sub-title">Descripción de falla:</div>
+                        <div>
+                            {{Form::textarea('descripcionFalla',$consulta->descripcionFalla,['class' => 'form-control','readonly'=>'readonly'])}}
+                        </div>
+
+                    </div>
+
+                </div>
+                <!--tercer tab Archivos --->
+                <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
+
+                    <!-- columna 1 -->
+                    <div class="form-group col-md-4">
+
+                        <!--foto vista superior:  -->
+                        @foreach($cvistaSuperior as $vsup)
+                        @if($vsup->vistaSuperior=='Sin archivo')
+                        <div class="sub-title">* Subir foto vista superior:</div>
+                        <div>
+                            @if($errors->first('vistaSuperior'))
+                            <i> {{ $errors->first('vistaSuperior') }}</i>
+                            @endif
+                            {{Form::file('vistaSuperior',['class' => 'form-control'])}}
+                        </div>
+                        @else
+                        <div class="sub-title">Actualizar foto vista superior:</div>
+                        <div>
+                            @if($errors->first('vistaSuperior'))
+                            <i> {{ $errors->first('vistaSuperior') }}</i>
+                            @endif
+                            {{Form::file('vistaSuperior',['class' => 'form-control'])}}
+                        </div>
+                        @endif
+                        @endforeach
+                        <br><br>
+                        <!--Foto vista frente -->
+                        @foreach($cvistaFrente as $cvf)
+                        @if($cvf->vistaFrente=='Sin archivo')
+                        <div class="sub-title">* Subir Foto vista frente:</div>
+                        <div>
+                            @if($errors->first('vistaFrente'))
+                            <i> {{ $errors->first('vistaFrente') }}</i>
+                            @endif
+                            {{Form::file('vistaFrente',['class' => 'form-control'])}}
+                        </div>
+                        @else
+                        <div class="sub-title">Actualizar Foto vista frente</div>
+                        <div>
+                            @if($errors->first('vistaFrente'))
+                            <i> {{ $errors->first('vistaFrente') }}</i>
+                            @endif
+                            {{Form::file('vistaFrente',['class' => 'form-control'])}}
+                        </div>
+                        @endif
+                        @endforeach
+
+                        <!-- vista trasera-->
+                        <br><br>
+
+                        @foreach($cvistaTrasera as $cvt)
+                        @if($cvt->vistaTrasera=='Sin archivo')
+                        <div class="sub-title">Subir Foto vista trasera:</div>
+                        <div>
+                            @if($errors->first('vistaTrasera'))
+                            <i> {{ $errors->first('vistaTrasera') }}</i>
+                            @endif
+                            {{Form::file('vistaTrasera',['class' => 'form-control'])}}
+                        </div>
+                        @else
+                        <div class="sub-title">Actualizar Foto vista trasera</div>
+                        <div>
+                            @if($errors->first('vistaTrasera'))
+                            <i> {{ $errors->first('vistaTrasera') }}</i>
+                            @endif
+                            {{Form::file('vistaTrasera',['class' => 'form-control'])}}
+                        </div>
+                        @endif
+                        @endforeach
+                    </div>
+                    <!-- columna 2 iconos de descarga-->
+                    <div class="form-group col-md-2">
+                        <div>
+                            <center>
+                                <div style='text-align'>
+                                    @foreach($cvistaSuperior as $vvistaSuperior)
+                                    @if($vvistaSuperior->vistaSuperior=='Sin archivo' ||
+                                    $vvistaSuperior->vistaSuperior=='')
+                                    <br><br>
+                                    <img src="{{asset('img/descargano.png')}}" height=50 width=50>
+                                    @else
+                                    <br>
+                                    <a href="{{asset('archivos/'.$vvistaSuperior->vistaSuperior)}}"
+                                        target="_blank">
+                                        <img src="{{asset('img/descarga.png')}}" height=50 width=50>
+                                        <h6>Descargar foto vista superior</h6>
+                                    </a>
+                                    @endif
+                                    @endforeach
+                                </div>
+                            </center>
+                        </div>
+                        <br>
+
+                        <div>
+                            <center>
+
+                                <div style='text-align'>
+                                    @foreach($cvistaFrente as $cvfi)
+                                    @if($cvfi->vistaFrente=='Sin archivo' || $cvfi->vistaFrente=='')
+                                    <br>
+                                    <img src="{{asset('img/descargano.png')}}" height=50 width=50>
+                                    @else
+                                    <a href="{{asset('archivos/'.$cvfi->vistaFrente)}}" target="_blank">
+                                        <img src="{{asset('img/descarga.png')}}" height=50 width=50>
+                                        <h6>Descargar foto vista Frente</h6>
+                                    </a>
+                                    @endif
+                                    @endforeach
+                                </div>
+                            </center>
+                        </div>
+                        <br>
+                        <div>
+                            <center>
+
+                                <div style='text-align'>
+                                    @foreach($cvistaTrasera as $cvti)
+                                    @if($cvti->vistaTrasera=='Sin archivo' || $cvti->vistaTrasera=='')
+                                    <br><br><br>
+                                    <img src="{{asset('img/descargano.png')}}" height=50 width=50>
+                                    @else
+                                    <a href="{{asset('archivos/'.$cvti->vistaTrasera)}}" target="_blank">
+                                        <img src="{{asset('img/descarga.png')}}" height=50 width=50>
+                                        <h6>Descargar foto vista Frente</h6>
+                                    </a>
+                                    @endif
+                                    @endforeach
+                                </div>
+                            </center>
+                        </div>
+
+                    </div>
+                    <!--Columna 3 -->
+
+                    <div class="form-group col-md-4">
+                        @foreach($clateralIzquierda as $cvli)
+                        @if($cvli->lateralIzquierda=='Sin archivo')
+                        <div class="sub-title">Subir Foto lateral izquierda:</div>
+                        <div>
+                            @if($errors->first('lateralIzquierda'))
+                            <i> {{ $errors->first('lateralIzquierda') }}</i>
+                            @endif
+                            {{Form::file('lateralIzquierda',['class' => 'form-control'])}}
+                        </div>
+                        @else
+                        <div class="sub-title">Actualizar Foto lateral izquierda:</div>
+                        <div>
+                            @if($errors->first('lateralIzquierda'))
+                            <i> {{ $errors->first('lateralIzquierda') }}</i>
+                            @endif
+                            {{Form::file('lateralIzquierda',['class' => 'form-control'])}}
+                        </div>
+                        @endif
+                        @endforeach
+                        <br><br>
+
+                        @foreach($clateralDerecha as $cvld)
+                        @if($cvld->lateralDerecha=='Sin archivo')
+                        <div class="sub-title">Subir Foto lateral derecha:</div>
+                        <div>
+                            @if($errors->first('lateralDerecha'))
+                            <i> {{ $errors->first('lateralDerecha') }}</i>
+                            @endif
+                            {{Form::file('lateralDerecha',['class' => 'form-control'])}}
+                        </div>
+                        @else
+                        <div class="sub-title">Actualizar Foto lateral derecha:</div>
+                        <div>
+                            @if($errors->first('lateralDerecha'))
+                            <i> {{ $errors->first('lateralDerecha') }}</i>
+                            @endif
+                            {{Form::file('lateralDerecha',['class' => 'form-control'])}}
+                        </div>
+                        @endif
+                        @endforeach
+                        <br><br>
+
+                        @foreach($cplaca_1 as $cp1)
+                        @if($cp1->placa_1=='Sin archivo')
+                        <div class="sub-title">* Subir Foto placa 1:</div>
+                        <div>
+                            @if($errors->first('placa_1'))
+                            <i> {{ $errors->first('placa_1') }}</i>
+                            @endif
+                            {{Form::file('placa_1',['class' => 'form-control'])}}
+                        </div>
+                        @else
+                        <div class="sub-title">Actualizar Foto placa 1:</div>
+                        <div>
+                            @if($errors->first('placa_1'))
+                            <i> {{ $errors->first('placa_1') }}</i>
+                            @endif
+                            {{Form::file('placa_1',['class' => 'form-control'])}}
+                        </div>
+                        @endif
+                        @endforeach
+                        <br><br>
+                        @foreach($cplaca_2 as $cp2)
+                        @if($cp2->placa_2=='Sin archivo')
+                        <div class="sub-title">Subir Foto placa 2:</div>
+                        <div>
+                            @if($errors->first('placa_2'))
+                            <i> {{ $errors->first('placa_2') }}</i>
+                            @endif
+                            {{Form::file('placa_2',['class' => 'form-control'])}}
+                        </div>
+                        @else
+                        <div class="sub-title">Actualizar Foto placa 2:</div>
+                        <div>
+                            @if($errors->first('placa_2'))
+                            <i> {{ $errors->first('placa_2') }}</i>
+                            @endif
+                            {{Form::file('placa_2',['class' => 'form-control'])}}
+                        </div>
+                        @endif
+                        @endforeach
+
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <div>
+                            <center>
+                                <div style='text-align'>
+                                    @foreach($clateralIzquierda as $cli)
+                                    @if($cli->lateralIzquierda=='Sin archivo' || $cli->lateralIzquierda=='')
+                                    <br><br>
+                                    <img src="{{asset('img/descargano.png')}}" height=50 width=50>
+                                    @else
+                                    <br>
+                                    <a href="{{asset('archivos/'.$cli->lateralIzquierda)}}" target="_blank">
+                                        <img src="{{asset('img/descarga.png')}}" height=50 width=50>
+                                        <h6>Descargar foto vista lateral izquierda</h6>
+                                    </a>
+                                    @endif
+                                    @endforeach
+                                </div>
+                            </center>
+                        </div>
+
+                        <div>
+                            <center>
+                                <div style='text-align'>
+                                    @foreach($clateralDerecha as $cld)
+                                    @if($cld->lateralDerecha=='Sin archivo' || $cld->lateralDerecha=='')
+                                    <br><br><br>
+                                    <img src="{{asset('img/descargano.png')}}" height=50 width=50>
+                                    @else
+                                    <br>
+                                    <a href="{{asset('archivos/'.$cld->lateralDerecha)}}" target="_blank">
+                                        <img src="{{asset('img/descarga.png')}}" height=50 width=50>
+                                        <h6>Descargar foto vista lateral </h6>
+                                    </a>
+                                    @endif
+                                    @endforeach
+                                </div>
+                            </center>
+                        </div>
+
+                        <div>
+                            <center>
+                                <div style='text-align'>
+                                    @foreach($cplaca_1 as $cp1)
+                                    @if($cp1->placa_1=='Sin archivo' || $cp1->placa_1=='')
+                                    <br><br><br><br>
+                                    <img src="{{asset('img/descargano.png')}}" height=50 width=50>
+                                    @else
+                                    <br>
+                                    <a href="{{asset('archivos/'.$cp1->placa_1)}}" target="_blank">
+                                        <img src="{{asset('img/descarga.png')}}" height=50 width=50>
+                                        <h6>Descargar foto placa 1</h6>
+                                    </a>
+                                    @endif
+                                    @endforeach
+                                </div>
+                            </center>
+                        </div>
+                        <br>
+                        <div>
+                            <center>
+                                <div style='text-align'>
+                                    @foreach($cplaca_2 as $cp2)
+                                    @if($cp2->placa_2=='Sin archivo' || $cp2->placa_2=='')
+                                    <br><br><br>
+                                    <img src="{{asset('img/descargano.png')}}" height=50 width=50>
+                                    @else
+                                    <br>
+                                    <a href="{{asset('archivos/'.$cp2->placa_2)}}" target="_blank">
+                                        <img src="{{asset('img/descarga.png')}}" height=50 width=50>
+                                        <h6>Descargar foto placa 2</h6>
+                                    </a>
+                                    @endif
+                                    @endforeach
+                                </div>
+                            </center>
+                        </div>
+                        <br><br>
+                    </div>
+                </div>
+
+                <!-- piezas -->
+                <div class="tab-pane fade" id="piezas" role="tabpanel" aria-labelledby="pills-profile-tab">
+                    <br><br>
+                    <div id='reportitoDePartesCreadas'>
+                        @if($cuantasPartes < 1) <div class="alert alert-warning" role="alert" align="center">
+                            <label for="">Este equipo no se ha dividido en partes</label>
+                    </div>
+                    @else
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+                            <thead>
+                                <tr style=" background-color: #C5EBFB;">
+                                    <th>GCM ID PARTE</th>
+                                    <th>Nombre</th>
+                                    <th>Fecha salida</th>
+                                    <th>Fecha llegada</th>
+                                    <th>Taller</th>
+                                    <th>Tipo de servicio</th>
+                                    <th>Estatus</th>
+                                    <th>
+                                        <center>Operaciones</center>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($consultaPartesCreadas as $cpc)
+                                <tr>
+                                    <td>{{$cpc->GCMidParte}}</td>
+                                    <td>{{$cpc->nombreParte}}</td>
+                                    <td>{{$cpc->fechaSalida}}</td>
+                                    <td>{{$cpc->fechaRecepcion}}</td>
+                                    <td>{{$cpc->nombreTaller}}</td>
+                                    <td>{{$cpc->prioridadRep}}</td>
+                                    <td>{{$cpc->nombreEstatus}}</td>
+                                    <td align="center">
+                                        <form action='' method='POST' enctype='application/x-www-form-urlencoded'
+                                            target='_self'>
+                                            <input type="hidden" value="{{$cpc->idParte}}" name="idParte">
+                                            <button type="button" class="btn btn-sm btn-info detalle">
+                                                <i class="ace-icon fa fa-pencil bigger"> Detalle</i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    @endif
+                    <div id="detalleParte">
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- tab de cotizacion -->
+            <div class="tab-pane fade" id="detalleCotizacion" role="tabpanel" aria-labelledby="pills-profile-tab">
+                <br>
+                @if($visible == 1)
+                <div class="form-group col-md-6">
+                    <div class="form-group row">
+                        <div class="col-sm-4"><b>Registrado por:</b></div>
+                        <div class="col-sm-8">
+                            <input type="text" name="usuario" class="form-control" readonly
+                                value="{{$infoCotizacion->usuario}}">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-sm-3"><b>*Fecha:</b></div>
+                        <div class="col-sm-9">
+                            {{Form::date('fechaCotizacion',$infoCotizacion->fechaCotizacion,['class' => 'form-control','id'=>'fechaCotizacion','readonly'])}}
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-sm-3"><b>*Sucursal:</b></div>
+                        <div class="col-sm-9">
+                            <select name='idSucursal' id='comboSucursal' class="form-control" readonly>
+                                <option value="{{$infoCotizacion->idSucursal}}">{{$infoCotizacion->sucursal}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-sm-5"><b>Número de cotización:</b></div>
+                        <div class="col-sm-7 numeroCotizacionGenerado">
+                            {{Form::text('numeroCotizacion',$infoCotizacion->numeroCotizacion,['class' => 'form-control', 'readonly'])}}
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-sm-3"><b>Dirigido a:</b></div>
+                        <div class="col-sm-9">
+                            <select name='dirigidoA' class="form-control comboContacto" readonly>
+                                <option value="{{$infoCotizacion->dirigidoA}}">{{$infoCotizacion->dirigidoA}}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-sm-2"><b>Cc:</b></div>
+                        <div class="col-sm-10">
+                            <select name='conCopia' class="form-control comboContacto" readonly>
+                                <option value="{{$infoCotizacion->conCopia}}">{{$infoCotizacion->conCopia}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-2"><b>Monto:</b></div>
+                        <div class="col-sm-4">
+                            <?php                            
+                                $montoYmoneda = $infoCotizacion->tipoMoneda." $".$infoCotizacion->montoTotal;
+                            ?>
+                            {{Form::text('montoTotal',$montoYmoneda,['id'=>'monto','class' => 'form-control', 'readonly'])}}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6">
+
+                    <div class='form-group row'>
+                        <div class='col-md-12'><b>*Notas y condiciones comerciales:</b></div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                @if($infoCotizacion->check1 == "si")
+                                <div class="col-md-1" style="padding-top:8px;">
+                                    {{ Form::checkbox('check1','si',true,['id'=>'check1','disabled'])}}</div>
+                                @else
+                                <div class="col-md-1" style="padding-top:8px;">
+                                    {{ Form::checkbox('check1','si',false,['id'=>'check1','disabled'])}}</div>
+                                @endif
+                                <div class="col-md-10">
+                                    {{ Form::text('textoCheck1',$infoCotizacion->textoCheck1,['class' => 'form-control','style'=>'margin: 2px;','readonly'])}}
+                                </div>
+                            </div>
+                            <div class="row">
+                                @if($infoCotizacion->check2 == "si")
+                                <div class="col-md-1" style="padding-top:8px;">
+                                    {{ Form::checkbox('check2','si',true,['id'=>'check2','disabled'])}}</div>
+                                @else
+                                <div class="col-md-1" style="padding-top:8px;">
+                                    {{ Form::checkbox('check2','si',false,['id'=>'check2','disabled'])}}</div>
+                                @endif
+                                <div class="col-md-10">
+                                    {{ Form::text('textoCheck2',$infoCotizacion->textoCheck2,['class' => 'form-control','style'=>'margin: 2px;','readonly'])}}
+                                </div>
+                            </div>
+                            <div class="row">
+                                @if($infoCotizacion->check3 == "si")
+                                <div class="col-md-1" style="padding-top:8px;">
+                                    {{ Form::checkbox('check3','si',true,['id'=>'check3','disabled'])}}</div>
+                                @else
+                                <div class="col-md-1" style="padding-top:8px;">
+                                    {{ Form::checkbox('check3','si',false,['id'=>'check3','disabled'])}}</div>
+                                @endif
+                                <div class="col-md-10">
+                                    {{ Form::text('textoCheck3',$infoCotizacion->textoCheck3,['class' => 'form-control','style'=>'margin: 2px;','readonly'])}}
+                                </div>
+                            </div>
+                            <div class="row">
+                                @if($infoCotizacion->check4 == "si")
+                                <div class="col-md-1" style="padding-top:8px;">
+                                    {{ Form::checkbox('check4','si',true,['id'=>'check4','disabled'])}}</div>
+                                @else
+                                <div class="col-md-1" style="padding-top:8px;">
+                                    {{ Form::checkbox('check4','si',false,['id'=>'check4','disabled'])}}</div>
+                                @endif
+                                <div class="col-md-10">
+                                    {{ Form::text('textoCheck4',$infoCotizacion->textoCheck4,['class' => 'form-control','style'=>'margin: 2px;','readonly'])}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                @if($infoCotizacion->check5 == "si")
+                                <div class="col-md-1" style="padding-top:8px;">
+                                    {{ Form::checkbox('check5','si',true,['id'=>'check5','disabled'])}}</div>
+                                @else
+                                <div class="col-md-1" style="padding-top:8px;">
+                                    {{ Form::checkbox('check5','si',false,['id'=>'check5','disabled'])}}</div>
+                                @endif
+                                <div class="col-md-10">
+                                    {{ Form::text('textoCheck5',$infoCotizacion->textoCheck5,['class' => 'form-control','style'=>'margin: 2px;','readonly'])}}
+                                </div>
+                            </div>
+                            <div class="row">
+                                @if($infoCotizacion->check6 == "si")
+                                <div class="col-md-1" style="padding-top:8px;">
+                                    {{ Form::checkbox('check6','si',true,['id'=>'check6','disabled'])}}</div>
+                                @else
+                                <div class="col-md-1" style="padding-top:8px;">
+                                    {{ Form::checkbox('check6','si',false,['id'=>'check6','disabled'])}}</div>
+                                @endif
+                                <div class="col-md-10">
+                                    {{ Form::text('textoCheck6',$infoCotizacion->textoCheck6,['class' => 'form-control','style'=>'margin: 2px;','readonly'])}}
+                                </div>
+                            </div>
+                            <div class="row">
+                                @if($infoCotizacion->check7 == "si")
+                                <div class="col-md-1" style="padding-top:8px;">
+                                    {{ Form::checkbox('check7','si',true,['id'=>'check7','disabled'])}}</div>
+                                @else
+                                <div class="col-md-1" style="padding-top:8px;">
+                                    {{ Form::checkbox('check7','si',false,['id'=>'check7','disabled'])}}</div>
+                                @endif
+                                <div class="col-md-10">
+                                    {{ Form::text('textoCheck7',$infoCotizacion->textoCheck7,['class' => 'form-control','style'=>'margin: 2px;','readonly'])}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class=''>
+                        <div class="">
+                            @if($infoCotizacion->estatus == "Pendiente de atorización")
+                            <div class="form-group col-md-7">
+                                <div class=''><b>*Estatus de cotización:</b></div>
+                                <div>{{Form::radio('estatus','En revisión',false,['disabled'])}} En revisión</div>
+                                <div>{{Form::radio('estatus','Pendiente de atorización',true,['disabled'])}} Pendiente
+                                    de atorización</div>
+                                <div>{{Form::radio('estatus','Aceptada con orden de compra',false,['disabled'])}}
+                                    Aceptada con orden de compra</div>
+                                <div>{{Form::radio('estatus','Cancelada',false,['disabled'])}} Cancelada</div>
+                            </div>
+                            <div class='cold-md-5'><b>*Archivo:</b>
+                                <div>
+                                    @foreach($archivoDeCotizacion as $cotizacionFoto)
+                                    @if($cotizacionFoto->archivoCotizacion =='Sin archivo')
+                                    <h5 align="center"><span class="label label-warning">Sin archivo</span></h5>
+                                    @else
+                                    <a target="_blank"
+                                        href="{{asset ('public/archivos/'.$cotizacionFoto->archivoCotizacion)}}">
+                                        @if(strpos($cotizacionFoto->archivoCotizacion,'pdf'))
+                                        <i class="fa fa-file-pdf-o fa-5x" aria-hidden="true"
+                                            style="color: #750404;background-color: #fff;border-color: #4d42ff59;"></i>
+                                        @else
+                                        <img src="{{asset ('public/archivos/'.$cotizacionFoto->archivoCotizacion)}}"
+                                            height=80 width=80>
+                                        @endif
+                                    </a>
+                                    @endif
+                                    @endforeach
+                                </div>
+                            </div>
+                            @elseif($infoCotizacion->estatus == "En revisión")
+                            <div class="form-group col-md-7">
+                                <div class=''><b>*Estatus de cotización:</b></div>
+                                <div>{{Form::radio('estatus','En revisión',true,['disabled'])}} En revisión</div>
+                                <div>{{Form::radio('estatus','Pendiente de atorización',false,['disabled'])}} Pendiente
+                                    de atorización</div>
+                                <div>{{Form::radio('estatus','Aceptada con orden de compra',false,['disabled'])}}
+                                    Aceptada con orden de compra</div>
+                                <div>{{Form::radio('estatus','Cancelada',false,['disabled'])}} Cancelada</div>
+                            </div>
+                            <div class='cold-md-5'><b>*Archivo:</b>
+                                <div>
+                                    @foreach($archivoDeCotizacion as $cotizacionFoto)
+                                    @if($cotizacionFoto->archivoCotizacion =='Sin archivo')
+                                    <h5 align="center"><span class="label label-warning">Sin archivo</span></h5>
+                                    @else
+                                    <a target="_blank"
+                                        href="{{asset ('public/archivos/'.$cotizacionFoto->archivoCotizacion)}}">
+                                        @if(strpos($cotizacionFoto->archivoCotizacion,'pdf'))
+                                        <i class="fa fa-file-pdf-o fa-5x" aria-hidden="true"
+                                            style="color: #750404;background-color: #fff;border-color: #4d42ff59;"></i>
+                                        @else
+                                        <img src="{{asset ('public/archivos/'.$cotizacionFoto->archivoCotizacion)}}"
+                                            height=80 width=80>
+                                        @endif
+                                    </a>
+                                    @endif
+                                    @endforeach
+                                </div>
+                            </div>
+                            @elseif($infoCotizacion->estatus == "Cancelada")
+                            <div class="form-group col-md-7">
+                                <div class=''><b>*Estatus de cotización:</b></div>
+                                <div>{{Form::radio('estatus','En revisión',false,['disabled'])}} En revisión</div>
+                                <div>{{Form::radio('estatus','Pendiente de atorización',false,['disabled'])}} Pendiente
+                                    de atorización</div>
+                                <div>{{Form::radio('estatus','Aceptada con orden de compra',false,['disabled'])}}
+                                    Aceptada con orden de compra</div>
+                                <div>{{Form::radio('estatus','Cancelada',true,['disabled'])}} Cancelada</div>
+                            </div>
+                            <div class='cold-md-5'><b>*Archivo:</b>
+                                <div>
+                                    @foreach($archivoDeCotizacion as $cotizacionFoto)
+                                    @if($cotizacionFoto->archivoCotizacion =='Sin archivo')
+                                    <h5 align="center"><span class="label label-warning">Sin archivo</span></h5>
+                                    @else
+                                    <a target="_blank"
+                                        href="{{asset ('public/archivos/'.$cotizacionFoto->archivoCotizacion)}}">
+                                        @if(strpos($cotizacionFoto->archivoCotizacion,'pdf'))
+                                        <i class="fa fa-file-pdf-o fa-5x" aria-hidden="true"
+                                            style="color: #750404;background-color: #fff;border-color: #4d42ff59;"></i>
+                                        @else
+                                        <img src="{{asset ('public/archivos/'.$cotizacionFoto->archivoCotizacion)}}"
+                                            height=80 width=80>
+                                        @endif
+                                    </a>
+                                    @endif
+                                    @endforeach
+                                </div>
+                            </div>
+                            @else
+                            <div class="form-group col-md-7">
+                                <div class=''><b>*Estatus de cotización:</b></div>
+                                <div>{{Form::radio('estatus','En revisión',false,['disabled'])}} En revisión</div>
+                                <div>{{Form::radio('estatus','Pendiente de atorización',false,['disabled'])}} Pendiente
+                                    de atorización</div>
+                                <div>{{Form::radio('estatus','Aceptada con orden de compra',true,['disabled'])}}
+                                    Aceptada con orden de compra</div>
+                                <div>{{Form::radio('estatus','Cancelada',false,['disabled'])}} Cancelada</div>
+                            </div>
+                            <div class='cold-md-5'><b>*Archivo:</b>
+                                <div>
+                                    @foreach($archivoDeCotizacion as $cotizacionFoto)
+                                    @if($cotizacionFoto->archivoCotizacion =='Sin archivo')
+                                    <h5 align="center"><span class="label label-warning">Sin archivo</span></h5>
+                                    @else
+                                    <a target="_blank"
+                                        href="{{asset ('public/archivos/'.$cotizacionFoto->archivoCotizacion)}}">
+                                        @if(strpos($cotizacionFoto->archivoCotizacion,'pdf'))
+                                        <i class="fa fa-file-pdf-o fa-5x" aria-hidden="true"
+                                            style="color: #750404;background-color: #fff;border-color: #4d42ff59;"></i>
+                                        @else
+                                        <img src="{{asset ('public/archivos/'.$cotizacionFoto->archivoCotizacion)}}"
+                                            height=80 width=80>
+                                        @endif
+                                    </a>
+                                    @endif
+                                    @endforeach
+                                </div>
+                            </div>
+                            @endif
+                        </div>
+                        <br><br><br><br><br><br>
+                    </div>
+                </div>
+                
+               <center>
+                <div style="text-align:center;">
+                    <b>Equipos en cotización</b>
+                </div>
+               
+                <br>
+                <div style="text-align:center;">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+                            <thead>
+                                <tr style=" background-color: #E8E8E8;">
+                                    <!-- <th>Servicio </th> -->
+                                    <th>Equipo</th>
+                                    <th>GCMid Parte</th>
+                                    <th>Tiempo de entrega</th>
+                                    <th>Costo unitario</th>
+                                    <th>Costo total</th>
+                                    <th>Notas</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($equiposCotizados as $equipos)
+                                <tr>
+                                   
+                                    <td style="text-align:center;width:240px;">
+                                        @foreach($datosEquipoCotizado as $dEc)
+                                        @if($equipos->idEquipos == $dEc->idEquipos)
+                                        {{$dEc->equipo}}
+                                        @break
+                                        @endif
+                                        @endforeach
+                                    </td>
+                                    <td style="text-align:center;">{{$equipos->GCMid}} - {{$equipos->complementoGCMid}}
+                                    </td>
+                                    <td style="text-align:center;">{{$equipos->semanasEntrega}}</td>
+                                    <td style="text-align:center;">{{$infoCotizacion->tipoMoneda}}
+                                        ${{$equipos->montoEquipo}}</td>
+                                    <td style="text-align:center;">
+                                        @if($equipos->descuento !="")
+                                        - @if($equipos->tipoDescuento == "porcentaje"){{$equipos->descuento}}% @else
+                                        ${{$equipos->descuento}} @endif
+                                        <br>{{$infoCotizacion->tipoMoneda}} ${{$equipos->montoFinanciamiento}}
+                                        @else
+                                        {{$infoCotizacion->tipoMoneda}} ${{$equipos->montoEquipo}}
+                                        @endif
+                                    </td>
+                                    <td>
+                                        {{$equipos->notas}}
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                @else 
+                <div class="alert alert-warning" role="alert" align="center">
+                    <label for="">Tu usuario no tiene permitido ver esta información.</label>
+                </div>
+                @endif
+            </div>
+
+            <div class="tab-pane fade" id="archivosFactura" role="tabpanel" aria-labelledby="pills-profile-tab">
+            <br>
+                @if($visible == 1)
+                    <div class="form-group col-md-4">
+                        <div class="sub-title">Número de cotización:</div>
+                        <div>
+                            {{Form::text('numeroCotizacion',$datosFacturaPorEquipo->numeroCotizacion,['class' => 'form-control', 'placeholder' => 'Ejemplo: AC286639', 'readonly'])}}
+                        </div>
+
+
+                        <div class="sub-title">Orden de Compra:</div>
+                        <div>
+                            {{Form::text('ordenCompra',$datosFacturaPorEquipo->ordenCompra,['class' => 'form-control', 'placeholder' => 'Ejemplo: AC286639', 'readonly'])}}
+                        </div>
+
+                        <br><br>
+
+                        <div class="sub-title">Factura:</div>
+                        <div>
+                            {{Form::text('factura',$datosFacturaPorEquipo->factura,['class' => 'form-control', 'placeholder' => 'Ejemplo: 10', 'readonly'])}}
+                        </div>
+
+
+                        <br><br><br><br>
+
+                        <div class="sub-title">Comprobante de pago:</div>
+                        <div>
+                            {{Form::text('comprobantePago',$datosFacturaPorEquipo->comprobantePago,['class' => 'form-control', 'placeholder' => 'Ejemplo: 10', 'readonly'])}}
+                        </div>
+
+
+                        <div class="sub-title">Número de remisión:</div>
+                        <div>
+                            {{Form::text('numeroRemision',$datosFacturaPorEquipo->numeroRemision,['class' => 'form-control', 'placeholder' => 'Ejemplo: 10', 'readonly'])}}
+                        </div>
+
+                        <div class="sub-title">Número de entrada:</div>
+                        <div>
+                            {{Form::text('numeroEntrada',$datosFacturaPorEquipo->numeroEntrada,['class' => 'form-control', 'placeholder' => 'Ejemplo: 10', 'readonly'])}}
+                        </div>
+                        <div class="sub-title">ADENDA:</div>
+                        <div>
+                            {{Form::text('adenda',$datosFacturaPorEquipo->adenda,['class' => 'form-control', 'placeholder' => 'Ejemplo: 10', 'readonly'])}}
+                        </div>
+                        
+                        <div class="sub-title">Número de documento :</div>
+                        <div>
+                            {{Form::text('numeroDocumento',$datosFacturaPorEquipo->numeroDocumento,['class' => 'form-control', 'placeholder' => 'Ejemplo: 10', 'readonly'])}}
+                        </div>
+
+                        <div class="sub-title">Anexo 1:</div>
+                        <div>
+                            {{Form::text('numeroAnexo1',$datosFacturaPorEquipo->numeroAnexo1,['class' => 'form-control', 'placeholder' => 'Ejemplo: 10', 'readonly'])}}
+                        </div>
+
+                        <div class="sub-title">Anexo 2:</div>
+                        <div>
+                            {{Form::text('numeroAnexo2',$datosFacturaPorEquipo->numeroAnexo2,['class' => 'form-control', 'placeholder' => 'Ejemplo: 10', 'readonly'])}}
+                        </div>
+
+                        <div class="sub-title">Anexo 3:</div>
+                        <div>
+                            {{Form::text('numeroAnexo3',$datosFacturaPorEquipo->numeroAnexo3,['class' => 'form-control', 'placeholder' => 'Ejemplo: 10', 'readonly'])}}
+                        </div>
+
+                        <div class="sub-title">Anexo 4:</div>
+                        <div>
+                            {{Form::text('numeroAnexo4',$datosFacturaPorEquipo->numeroAnexo4,['class' => 'form-control', 'placeholder' => 'Ejemplo: 10', 'readonly'])}}
+                        </div>
+
+                        <div class="sub-title">Anexo 5:</div>
+                        <div>
+                            {{Form::text('numeroAnexo5',$datosFacturaPorEquipo->numeroAnexo5,['class' => 'form-control', 'placeholder' => 'Ejemplo: 10', 'readonly'])}}
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                    <br>
+                            <div>
+                            <center>
+                                    <div style='text-align'>
+                                        @foreach($archivo as $archivo)
+                                        @if($archivo->archivoCotizacion=='Sin archivo' || $archivo->archivoCotizacion=='')
+                                        <img src="{{asset('img/archivono.png')}}" height="50" width="50">
+                                        <h6>Sin archivo cotización</h6>
+                                        @else
+                                        <a target="_blank" href="{{asset('archivos/'.$archivo->archivoCotizacion)}}">
+                                            <img src="{{asset('img/archivosi.png')}}" height=50 width=50>
+                                            <h6>Descargar cotización</h6>
+                                        </a>
+                                        @endif
+                                        @endforeach
+                                    </div>
+                                </center>
+                            </div>
+                            <div>
+                                <center>
+                                    <div style='text-align'>
+                                        @foreach($consultaArchivo as $archi)
+                                        @if($archi->archivo=='Sin archivo')
+                                        <img src="{{asset('img/archivono.png')}}" height="50" width="50">
+                                        <h6>Sin archivo Orden de Compra</h6>
+                                        @else
+                                        <a target="_blank" href="{{asset('archivos/'.$archi->archivo)}}">
+                                            <img src="{{asset('img/archivosi.png')}}" height=50 width=50>
+                                            <h6>Descargar Orden de Compra</h6>
+                                        </a>
+                                        @endif
+                                        @endforeach
+
+                                    </div>
+                                </center>
+                            </div>
+                            <br>
+                            <div>
+                                <center>
+                                    <div style='text-align'>
+                                        @foreach($consultaFactura as $fac)
+                                        @if($fac->archivoFactura=='Sin archivo')
+                                        <img src="{{asset('img/archivono.png')}}" height="50" width="50">
+                                        <h6>Sin archivo Factura</h6>
+                                        @else
+                                        <a target="_blank" href="{{asset('archivos/'.$fac->archivoFactura)}}">
+                                            <img src="{{asset('img/archivosi.png')}}" height=50 width=50>
+                                            <h6>Descargar Factura</h6>
+                                        </a>
+                                        @endif
+                                        @endforeach
+
+
+
+                                    </div>
+                                </center>
+                            </div>
+
+
+                            <div>
+                                <center>
+                                    <div style='text-align'>
+                                        @foreach($consultaxml as $xml)
+                                        @if($xml->xmlFactura=='Sin archivo')
+                                        <img src="{{asset('img/archivono.png')}}" height="50" width="50">
+                                        <h6>Sin archivo XML de la Factura</h6>
+                                        @else
+                                        <a target="_blank" href="{{asset('archivos/'.$xml->xmlFactura)}}">
+                                            <img src="{{asset('img/archivosi.png')}}" height=50 width=50>
+                                            <h6>Descargar XML de la Factura</h6>
+                                        </a>
+                                        @endif
+                                        @endforeach
+
+
+
+                                    </div>
+                                </center>
+                            </div>
+
+
+                            <br>
+                            <div>
+                                <center>
+                                    <div style='text-align'>
+                                        @foreach($consultaPago as $pago)
+                                        @if($pago->archivoPago=='Sin archivo')
+                                        <img src="{{asset('img/archivono.png')}}" height="50" width="50">
+                                        <h6>Sin archivo Comprobante de Pago</h6>
+                                        @else
+                                        <a target="_blank" href="{{asset('archivos/'.$pago->archivoPago)}}">
+                                            <img src="{{asset('img/archivosi.png')}}" height=50 width=50>
+                                            <h6>Descargar Comprobante de Pago</h6>
+                                        </a>
+                                        @endif
+                                        @endforeach
+
+
+
+                                    </div>
+                                </center>
+                            </div>
+
+                            <div>
+                                <center>
+                                    <div style='text-align'>
+                                        @foreach($consultaRemision as $remision)
+                                        @if($remision->archivoRemision=='Sin archivo')
+                                        <img src="{{asset('img/archivono.png')}}" height="50" width="50">
+                                        <h6>Sin archivo Comprobante de remisión</h6>
+                                        @else
+                                        <a target="_blank" href="{{asset('archivos/'.$remision->archivoRemision)}}">
+                                            <img src="{{asset('img/archivosi.png')}}" height=50 width=50>
+                                            <h6>Descargar Comprobante de remisión</h6>
+                                        </a>
+                                        @endif
+                                        @endforeach
+
+
+
+                                    </div>
+                                </center>
+                            </div>
+                            <br><br><br>
+                            <div>
+                                <center>
+                                    <div style='text-align'>
+                                        @foreach($consultaAdenda as $adenda)
+                                        @if($adenda->archivoAdenda=='Sin archivo')
+                                        <img src="{{asset('img/archivono.png')}}" height="50" width="50">
+                                        <h6>Sin archivo ADENDA</h6>
+                                        @else
+                                        <a target="_blank" href="{{asset('archivos/'.$adenda->archivoAdenda)}}">
+                                            <img src="{{asset('img/archivosi.png')}}" height=50 width=50>
+                                            <h6>Descargar ADENDA</h6>
+                                        </a>
+                                        @endif
+                                        @endforeach
+
+
+
+                                    </div>
+                                </center>
+                            </div>
+                            <div>
+                                <center>
+                                    <div style='text-align'>
+                                        @foreach($consultaOtro as $otro)
+                                        @if($otro->archivoOtro=='Sin archivo')
+                                        <img src="{{asset('img/archivono.png')}}" height="50" width="50">
+                                        <h6>Sin archivo (otros)</h6>
+                                        @else
+                                        <a target="_blank" href="{{asset('archivos/'.$otro->archivoOtro)}}">
+                                            <img src="{{asset('img/archivosi.png')}}" height=50 width=50>
+                                            <h6>Descargar archivo (otros)</h6>
+                                        </a>
+                                        @endif
+                                        @endforeach
+
+
+
+                                    </div>
+                                </center>
+                            </div>
+
+                            <div>
+                                <center>
+                                    <div style='text-align'>
+                                        @foreach($anexos as $a)
+                                        @if($a->anexo1=='Sin archivo' || $a->anexo1=='')
+                                        <img src="{{asset('img/archivono.png')}}" height="50" width="50">
+                                        <h6>Sin archivo anexo 1</h6>
+                                        @else
+                                        <a target="_blank" href="{{asset('archivos/'.$a->anexo1)}}">
+                                            <img src="{{asset('img/archivosi.png')}}" height=50 width=50>
+                                            <h6>Descargar anexo 1</h6>
+                                        </a>
+                                        @endif
+                                        @endforeach
+                                    </div>
+                                </center>
+                            </div>
+
+                            <div>
+                                <center>
+                                    <div style='text-align'>
+                                        @foreach($anexo2 as $a2)
+                                        @if($a2->anexo2=='Sin archivo' || $a2->anexo2=='')
+                                        <img src="{{asset('img/archivono.png')}}" height="50" width="50">
+                                        <h6>Sin archivo anexo 2</h6>
+                                        @else
+                                        <a target="_blank" href="{{asset('archivos/'.$a2->anexo2)}}">
+                                            <img src="{{asset('img/archivosi.png')}}" height=50 width=50>
+                                            <h6>Descargar anexo 2</h6>
+                                        </a>
+                                        @endif
+                                        @endforeach
+                                    </div>
+                                </center>
+                            </div>
+
+                            <div>
+                                <center>
+                                    <div style='text-align'>
+                                        @foreach($anexo3 as $a3)
+                                        @if($a3->anexo3=='Sin archivo' || $a3->anexo3=='')
+                                        <img src="{{asset('img/archivono.png')}}" height="50" width="50">
+                                        <h6>Sin archivo anexo 3</h6>
+                                        @else
+                                        <a target="_blank" href="{{asset('archivos/'.$a3->anexo3)}}">
+                                            <img src="{{asset('img/archivosi.png')}}" height=50 width=50>
+                                            <h6>Descargar anexo 3</h6>
+                                        </a>
+                                        @endif
+                                        @endforeach
+                                    </div>
+                                </center>
+                            </div>
+
+                            <div>
+                                <center>
+                                    <div style='text-align'>
+                                        @foreach($anexo4 as $a4)
+                                        @if($a4->anexo4=='Sin archivo' || $a4->anexo4=='')
+                                        <img src="{{asset('img/archivono.png')}}" height="50" width="50">
+                                        <h6>Sin archivo anexo 4</h6>
+                                        @else
+                                        <a target="_blank" href="{{asset('archivos/'.$a4->anexo4)}}">
+                                            <img src="{{asset('img/archivosi.png')}}" height=50 width=50>
+                                            <h6>Descargar anexo 4</h6>
+                                        </a>
+                                        @endif
+                                        @endforeach
+                                    </div>
+                                </center>
+                            </div>
+
+                            <div>
+                                <center>
+                                    <div style='text-align'>
+                                        @foreach($anexo5 as $a5)
+                                        @if($a5->anexo5=='Sin archivo' || $a5->anexo5=='')
+                                        <img src="{{asset('img/archivono.png')}}" height="50" width="50">
+                                        <h6>Sin archivo anexo 5</h6>
+                                        @else
+                                        <a target="_blank" href="{{asset('archivos/'.$a5->anexo5)}}">
+                                            <img src="{{asset('img/archivosi.png')}}" height=50 width=50>
+                                            <h6>Descargar anexo 5</h6>
+                                        </a>
+                                        @endif
+                                        @endforeach
+                                    </div>
+                                </center>
+                            </div>
+
+                    </div>
+                @else 
+                    <div class="alert alert-warning" role="alert" align="center">
+                        <label for="">Tu usuario no tiene permitido ver esta información.</label>
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+<script type="text/javascript">
+$("#idp").click(function() {
+    $("#divgcmid").load('{{url('generagcmid')}}' + '?idp=' + this.options[this.selectedIndex].value);
+    $("#divinfo").load('{{url('info')}}' + '?' + $(this).closest('form').serialize());
+    $("#divinfo").show("slow");
+});
+</script>
+
+<script type="text/javascript">
+$(".detalle").click(function() {
+    $("#detalleParte").load('{{url('detallePorParte')}}' + '?' + $(this).closest('form').serialize());
+});
+</script>
+
+<style>
+.tab {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+    font-size: 17px;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+    background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+    background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+    display: none;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+</style>
+@stop
