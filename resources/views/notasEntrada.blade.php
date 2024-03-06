@@ -47,7 +47,7 @@
                         <th>Fecha Pago Programado</th>
                         <th>Fecha Real Pago</th>
                         <th>Evidencia pago</th>
-                        <th>Monto final / Monto Complemento</th>
+                        <th>Monto Complemento</th>
                         <th>Complementos de pago</th>
                         <th></th>
                     </tr>
@@ -906,7 +906,7 @@
                                 contenido = "-";
                             }
 
-                          
+                         
 
                             return contenido;
                         }

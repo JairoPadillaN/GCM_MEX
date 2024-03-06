@@ -46,6 +46,7 @@
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             SURJA {{Form::radio('nombreEmpresa','SURJA')}}
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                          
                             <br>
                             Pedro Ocegueda J. {{Form::radio('nombreEmpresa','POJ')}}
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

@@ -26,6 +26,7 @@ use DB;
 use App\anexGrid;
 use App\gastos;
 use App\archivosFacturas;
+use App\vendedoresAsignadosServicios;
 
 use Session;
 
@@ -953,6 +954,27 @@ class facturasController extends Controller
 							  )AS t1");
 							  $cdp = $consultaDP[0]->monto;
                 ///////////////////////////////
+                /// Vendedores Asignados a Servicios  ///
+
+                $vendedores = usuarios::whereIn('idu', [5, 8, 10, 13, 18])              
+                ->orderby('nombreUsuario', 'asc')
+                ->select("usuarios.idu")
+                ->selectRaw("concat(usuarios.nombreUsuario, ' ', usuarios.aPaterno, ' ', usuarios.aMaterno) as vendedor")
+                ->get();               
+              
+                $consultaVas = vendedoresAsignadosServicios::where('idser', '=', $idFactura)
+                ->join("usuarios", "vendedoresAsignadosServicios.idvend", "=", "usuarios.idu")->
+                select(
+                  "vendedoresAsignadosServicios.idvas",
+                  "vendedoresAsignadosServicios.idser",
+                  "vendedoresAsignadosServicios.idvend",
+                  "vendedoresAsignadosServicios.porcentaje",
+                  // "usuarios.nombreUsuario as vendedor",
+                )
+                ->selectRaw("concat(usuarios.nombreUsuario, ' ', usuarios.aPaterno, ' ', usuarios.aMaterno) as vendedor")
+                ->get();  
+              $cuantosVas = count($consultaVas);                                                     
+
             
             if($consu == 'Soporte Técnico'){
               if($idCoti == ''){
@@ -1045,8 +1067,11 @@ class facturasController extends Controller
 				          ->with('consultaDP',$consultaDP)
                   ->with('OrdenConsulta', $OrdenConsulta)
                   ->with('CuantaOrden', $CuantaOrden)
-                  ->with('idFactura', $idFactura)
-                  ->with('totalesDatosPago', $totalesDatosPago);
+                  ->with('idFactura', $idFactura)                  
+                  ->with('totalesDatosPago', $totalesDatosPago)
+                  ->with('vendedores', $vendedores)
+                  ->with('consultaVas',$consultaVas)
+                  ->with('cuantosVas', $cuantosVas);
 
 
               }else{
@@ -1140,9 +1165,12 @@ class facturasController extends Controller
 				  ->with('totalMxn',$totalMxn)
 				  ->with('consultaDP',$consultaDP)
           ->with('OrdenConsulta', $OrdenConsulta)
-                  ->with('CuantaOrden', $CuantaOrden)
-                  ->with('idFactura', $idFactura)
-          ->with('totalesDatosPago', $totalesDatosPago);
+          ->with('CuantaOrden', $CuantaOrden)
+          ->with('idFactura', $idFactura)
+          ->with('totalesDatosPago', $totalesDatosPago)
+          ->with('vendedores', $vendedores)
+          ->with('consultaVas',$consultaVas)
+          ->with('cuantosVas', $cuantosVas);
                 
                 }
               }else{
@@ -1238,8 +1266,10 @@ class facturasController extends Controller
                   ->with('OrdenConsulta', $OrdenConsulta)
                   ->with('CuantaOrden', $CuantaOrden)
                   ->with('idFactura', $idFactura)
-                  ->with('totalesDatosPago', $totalesDatosPago);
-                  
+                  ->with('totalesDatosPago', $totalesDatosPago)
+                  ->with('vendedores', $vendedores)
+                  ->with('consultaVas',$consultaVas)
+                  ->with('cuantosVas', $cuantosVas);                  
 
                 }else{
 
@@ -1338,8 +1368,10 @@ class facturasController extends Controller
                   ->with('OrdenConsulta', $OrdenConsulta)
                   ->with('CuantaOrden', $CuantaOrden)
                   ->with('idFactura', $idFactura)
-                  ->with('totalesDatosPago', $totalesDatosPago);
-                  
+                  ->with('totalesDatosPago', $totalesDatosPago)
+                  ->with('vendedores', $vendedores)
+                  ->with('consultaVas',$consultaVas)
+                  ->with('cuantosVas', $cuantosVas);                
 
                 }
                
@@ -1761,6 +1793,47 @@ class facturasController extends Controller
             return view ('mensajeFactura')
               ->with('proceso',$proceso)
               ->with('mensaje',$mensaje);
+
+        }
+
+          
+        public function reporteFacturacion(Request $request){
+          $sname = Session::get('sesionname');
+            $sidu = Session::get('sesionidu');
+            $spat = Session::get('sesionpaterno');
+            $smat = Session::get('sesionmaterno');
+            $stipo = Session::get('sesiontipo');
+            if($sname == '' or $sidu =='' or $stipo=='' or $spat=='' or $smat==''){
+                Session::flash('error', 'Es necesario logearse antes de continuar');
+                return redirect()->route('login');
+            }
+            else{
+               
+              /*$servi = \DB::SELECT("SELECT f.idfactura, f.idservicios, f.numerofactura,obtenclavecotizacion(f.idfactura),'Venta Equipo','Servicio' AS Tiposervicio,
+              f.fechaFactura,f.fechaPago,c.razonSocial,s.sucursal,
+             f.estatusEntrega,f.estatusPortal,f.estatusPago,f.cashFlow, f.montoFactura,f.totalconiva,
+             f.idcotizacion, f.archivo AS archivoorden, f.archivofactura,f.archivoPago,f.xmlFactura,f.archivoRemision,f.archivoAdenda,f.activo
+             FROM facturas AS f
+             INNER JOIN clientes AS c ON c.idc = f.idc 
+             INNER JOIN sucursales AS s ON s.idsucursal = f.idsucursal ORDER BY f.created_at DESC ");*/
+
+             $servi = \DB::SELECT("SELECT t.idfactura,t.idservicios,t.numerofactura,SUBSTR(t.cotizacion,3,255) AS foliocotizacion,t.tiposervicio,t.fechafactura,t.fechapago,t.razonsocial,t.sucursal,
+             t.estatusentrega,t.estatusportal,t.cashflow,CONCAT(t.tipomoneda,' $ ',FORMAT(t.montofactura,2)) AS montofactura ,CONCAT(t.tipomoneda,' $ ',FORMAT(t.totalconiva,2)) AS totalconiva,t.idcotizacion,t.archivoorden AS archivoorden,t.archivofactura,t.archivopago,t.xmlfactura,
+             t.archivoremision,t.archivoadenda,t.activo,t.created_at,t.estatuspago,t.servicioActivo
+             FROM
+             (SELECT f.idfactura, f.idservicios, f.numerofactura,obtenclavecotizacion(f.idfactura) AS cotizacion,SUBSTR(obtenclavecotizacion(f.idfactura),1,1) AS tiposervicio,
+                           f.fechafactura,f.fechapago,c.razonsocial,s.sucursal,f.tipomoneda,
+                          f.estatusentrega,f.estatusportal,f.estatuspago,f.cashflow, f.montoFactura,f.totalconiva,f.created_at,f.servicioActivo,
+                          f.idcotizacion, f.archivo AS archivoorden, f.archivofactura,f.archivopago,f.xmlfactura,f.archivoremision,f.archivoadenda,f.activo
+                          FROM facturas AS f
+                          INNER JOIN clientes AS c ON c.idc = f.idc 
+                          INNER JOIN sucursales AS s ON s.idsucursal = f.idsucursal ORDER BY f.created_at DESC) AS t");
+              
+                //return $servi;
+                return view('reporteFacturacion')
+                ->with('servi', $servi);                
+            }
+
 
         }
 
@@ -2684,7 +2757,8 @@ class facturasController extends Controller
 
            $proceso ="Eliminacion de factura";
            $mensaje="La Factura ha sido desactivada correctamente";
-           return redirect('reporteFacturas');
+           //return redirect('reporteFacturas');
+           return redirect('reporteFacturacion');
     }
 
      public function restaurarFacturas ($idFactura){ //restarura el valos de NO a SI en el campo activo
@@ -2693,7 +2767,8 @@ class facturasController extends Controller
 
            $proceso ="Restauracion de factura";
            $mensaje="La factura ha sido activada correctamente";
-           return redirect('reporteFacturas');
+            //return redirect('reporteFacturas');
+            return redirect('reporteFacturacion');
     }
 
     public function activarServicio ($idFactura){ //cambia el valor a SI en el campo servicioActivo
@@ -2702,8 +2777,8 @@ class facturasController extends Controller
 
       $proceso ="Activación de factura";
       $mensaje="La factura ha sido activada correctamente";
-      return redirect('reporteFacturas');
-
+    //return redirect('reporteFacturas');
+    return redirect('reporteFacturacion');
     }
 
     public function cerrarServicio ($idFactura){ //cambia el valor a NO en el campo servicioActivo
@@ -2712,8 +2787,8 @@ class facturasController extends Controller
 
       $proceso ="Cierre de factura";
       $mensaje="La factura ha sido cerrada correctamente";
-      return redirect('reporteFacturas');
-
+      //return redirect('reporteFacturas');
+      return redirect('reporteFacturacion');
     }
 
 public function downloadFile($src){
@@ -2825,6 +2900,7 @@ public function agregarDatosPago(Request $request){
   $subtotalFac = $request -> subtotalFac;
   $saldoReal = $request -> saldoReal;
   $difCambiaria = $request -> difCambiaria;
+  $fechafactura = $request -> fechafactura;
   
 
 
@@ -2846,6 +2922,7 @@ public function agregarDatosPago(Request $request){
   $datosP-> difCambiaria = $request-> difCambiaria;
   $datosP-> observaciones = $request-> observaciones;
   $datosP-> pagada = $request-> pagada;
+  $datosP-> fechafactura = $request->fechafact;
   $datosP-> save();
 
   $consultaDatosPago = datosPagoServicios::where('idFactura', '=', $idFactura)->get();
@@ -2916,6 +2993,7 @@ public function agregarDatosPago(Request $request){
     $datosP-> difCambiaria = $request-> difCambiaria;
     $datosP-> observaciones = $request-> observaciones;
     $datosP-> pagada = $request-> pagada;
+    $datosP-> fechafactura = $request->fechafact;
     $datosP-> save();
 
     $consultaDatosPago = datosPagoServicios::where('idFactura', '=', $idFactura)->get();
@@ -2947,4 +3025,64 @@ public function excelGastoServicio(Request $request){
     };
   }
 
+  public function agregarVendedorPorcentaje(Request $request){
+    $idFactura = $request->idFactura;
+    
+    $sumaPorcentajes = \DB::table('vendedoresAsignadosServicios')
+        ->where('idser', $idFactura)
+        ->sum('porcentaje');
+        
+    if ($sumaPorcentajes + $request->porcentajeVendedor <= 100) {
+        $vas = new vendedoresAsignadosServicios;
+        $vas->idser = $request->idFactura;
+        $vas->idvend = $request->vendedor;
+        $vas->porcentaje = $request->porcentajeVendedor;
+        $vas->save();
+
+        $consultaVas = vendedoresAsignadosServicios::where('idser', '=', $idFactura)
+            ->join("usuarios", "vendedoresAsignadosServicios.idvend", "=", "usuarios.idu")
+            ->select(
+                "vendedoresAsignadosServicios.idvas",
+                "vendedoresAsignadosServicios.idser",
+                "vendedoresAsignadosServicios.idvend",
+                "vendedoresAsignadosServicios.porcentaje",
+                // "usuarios.nombreUsuario as vendedor",
+            )
+            ->selectRaw("concat(usuarios.nombreUsuario, ' ', usuarios.aPaterno, ' ', usuarios.aMaterno) as vendedor")
+            ->get();    
+
+            $cuantosVas = count($consultaVas);
+        return view("reporteVendedorPorcentaje")
+            ->with('cuantosVas', $cuantosVas)
+            ->with('consultaVas', $consultaVas);
+    } else {
+        return response()->json(['mensaje' => 'La suma de los porcentajes mayor al 100%']);
+    }
+}
+
+
+  public function borrarVendedorPorcentaje(Request $request){
+    $idvas=$request->idvas;
+    $idFactura=$request->idFactura;
+  
+    // return $idDatosPago;
+      $vas = vendedoresAsignadosServicios::find($idvas)->delete();
+    
+      
+      $consultaVas = vendedoresAsignadosServicios::where('idser', '=', $idFactura)
+    ->join("usuarios", "vendedoresAsignadosServicios.idvend", "=", "usuarios.idu")->
+    select(
+      "vendedoresAsignadosServicios.idvas",
+      "vendedoresAsignadosServicios.idser",
+      "vendedoresAsignadosServicios.idvend",
+      "vendedoresAsignadosServicios.porcentaje",
+      // "usuarios.nombreUsuario as vendedor",
+    )
+    ->selectRaw("concat(usuarios.nombreUsuario, ' ', usuarios.aPaterno, ' ', usuarios.aMaterno) as vendedor")
+    ->get(); 
+    $cuantosVas = count($consultaVas);
+    return view("reporteVendedorPorcentaje")   
+    ->with('cuantosVas',$cuantosVas)     
+        ->with('consultaVas',$consultaVas);
+  }
 }

@@ -24,9 +24,14 @@
         </div>
         <div class="panel-body">
             <div class="row">
+                
+                @if (Session::get('sesiontipo') == 'Contador')
+                
+                @else
                 <div class="col-md-4 mb-4">
                     <a href="{{url('altaArchivoUnico')}}" type="button" class="btn btn-success"><i class="fa-solid fa-plus"></i> Nuevo</a>
                 </div>
+                @endif
 {{--                 <div class="col-md-4 mb-4 text-right" style="font-size: 20px">
                     <label for="">Buscar: </label>
                 </div>
@@ -444,8 +449,11 @@
         }
         });
     });
+    if ('{{ Session::get('sesiontipo') }}' === 'Contador') {
+            table.column(5).visible(false);}
+        
+    
     });
-
 </script>
 
 

@@ -17,10 +17,15 @@
                             </a>
                         @endif -->
 
-                            <a href="{{asset('altaPartesVenta')}}">
-                                <button type="button" class="btn btn-primary ">Agregar Parte para venta
-                                </button>
-                            </a>
+                        {{-- @php
+                        $mostrarBoton = false;
+                        @endphp --}}
+                    
+                    {{-- @if($mostrarBoton) --}}
+                        <a href="{{ asset('altaPartesVenta') }}">
+                            <button type="button" class="btn btn-primary">Agregar Parte para venta</button>
+                        </a>
+                    {{-- @endif --}}
 
 
                     </div>

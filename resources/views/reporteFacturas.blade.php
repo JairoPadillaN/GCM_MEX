@@ -99,10 +99,11 @@
                         filtro: true
                     },
                     {
-                        leyenda: 'Folio de Factura',
+                        leyenda: 'Folio de ___Factura___',
                         ordenable: true,
                         columna: 'numeroFactura',
-                        filtro: true
+                        filtro: true,
+						
                     },
                     {
                         leyenda: 'Cotización Equipo',

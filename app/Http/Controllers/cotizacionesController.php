@@ -236,6 +236,18 @@ class cotizacionesController extends Controller{
     ->with('modeloParte',$modeloParte[0]);
   }
 
+  function fechaActualizacionParte(Request $request){
+    $idPartesVenta = $request->get('idPartesVenta');
+    $fechaActualizacionParte = \DB::select("SELECT fechaActualizacion FROM partesVenta WHERE idPartesVenta = $idPartesVenta");    
+    $fechaActual = Carbon::now();
+    $fechaActualizacion = Carbon::createFromFormat('Y-m-d', $fechaActualizacionParte[0]->fechaActualizacion);
+    $diferenciaDias = $fechaActual->diff($fechaActualizacion)->days;
+    return view("fechaActualizacionParte")
+        ->with('fechaActualizacionParte', $fechaActualizacionParte[0])
+        ->with('fechaActual', $fechaActual->format('Y-m-d'))
+        ->with('diferenciaDias', $diferenciaDias);
+}
+
   function descripcionParte(Request $request){
     $idPartesVenta = $request->get('idPartesVenta');
     $descripcionParte = \DB::select("SELECT CONCAT(codigo,' ',nombreRefaccion) AS descripcion FROM partesVenta WHERE idPartesVenta = $idPartesVenta");    

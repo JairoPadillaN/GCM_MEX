@@ -16,12 +16,16 @@
     <div class="col-md-12">
         <div class="panel panel-default" style="margin-top:-45px">
             <div class="panel-heading">
-                <h1 class="">Reporte de SKU's en Cotización</h1>
+                <h1 class="">Otros Ingresos</h1>
             </div>
-            <br>
+            
             <div class="panel-body">
+                <a href="{{ asset('altaIngresos') }}"><button type="button" class="boton">
+                    Agregar Ingreso
+                </button></a>
+                <br><br>
                 <div id="list" class="table-responsive">
-                    <!--
+                    
                     <table border="0" cellspacing="5" cellpadding="5" class="date-table">
                         <tbody>
                             <tr>
@@ -41,64 +45,115 @@
                             </tr>
                         </tbody>
                     </table>
-                    -->
-                    @if ($cuantaCoti == 0)
-                    <br>
-                    <div class="alert alert-warning" role="alert" align="center">
-                        <label for="">¡Sin SKU's registrados!</label>
-                    </div> 
-                    @else
-                    <table id="TablaSKUc" class="table-bordered display">
+                    
+                    
+                    <table id="TablaOtros" class="table table-striped table-bordered display nowrap" style="width:100%">
                         <thead>
                             <tr style="background-color: #C5EBFB">
-                                <th class="hidden">idcot</th>
-                                <th style="background-color: #C5EBFB;">Fecha Cotización</th><!-- 1 o pos 0 -->
-                                <th style="background-color: #C5EBFB;">Número Cotización</th>
-                                <th style="background-color: #C5EBFB;">Cliente</th>
-                                <th style="background-color: #C5EBFB;">Sucutrsal</th>
-                                <th style="background-color: #C5EBFB;">Marca</th>
-                                <th style="background-color: #C5EBFB;">Tipo</th>
-                                <th style="background-color: #C5EBFB;">SKU</th>
-                                <th style="background-color: #C5EBFB;">Descripción</th>
-                                <th style="background-color: #C5EBFB;">Modelo</th>
+                                <th class="no-display" hidden>idoi</th><!-- 1 o pos 0 -->
+                                <th style="background-color: #C5EBFB;">Fecha</th> 
+                                <th style="background-color: #C5EBFB;">Monto</th>
                                 <th style="background-color: #C5EBFB;">Moneda</th>
-                                <th style="background-color: #C5EBFB;">Cantidad</th>
-                                <th style="background-color: #C5EBFB;">Total</th>
-                                <th style="background-color: #C5EBFB;">Notas</th><!-- 13 o pos 12 -->
+                                <th style="background-color: #C5EBFB;">Tipo<br> Cambio</th>
+                                <th style="background-color: #C5EBFB;">Tipo de<br> Ingreso</th>
+                                <th style="background-color: #C5EBFB;">Condición</th>
+                                <th style="background-color: #C5EBFB;">Empresa</th>
+                                <th style="background-color: #C5EBFB;">Descripción</th>
+                                <th style="background-color: #C5EBFB;">Archivos</th>
+                                <th style="background-color: #C5EBFB;">Opciones</th><!-- 10 o pos 9 -->
                             </tr>
                         </thead> 
                         <tbody>
-                            @foreach ($cotizacion as $cot)
-                        <tr>
-                            <td class="hidden">{{ $cot->idCotizacion }}</td>
-                            <td>{{ \Carbon\Carbon::parse($cot->fechacotizacion)->format('d/m/Y') }}</td>
-                            <td>
-                                <a href="pdfCotizacion?idCotizacion={{ $cot->idCotizacion }}&verTotal=Si&pld=1&cD=Si" target="_blank">
-                                    {{ $cot->numeroCotizacion }}
-                                </a>
+                          @foreach ($cons as $con)
+                          <tr>
+                            <td class="hidden">{{ $con->idoi }}</td>
+                            <td>{{ \Carbon\Carbon::parse($con->fecha)->format('d/m/Y') }}</td>
+                            <td>$ {{ number_format($con->monto, 2, '.', ',') }}</td>
+                            <td>{{ $con->moneda }}</td>
+                            <td>{{ $con->tipocambio }}</td>
+                            <td>{{ $con->tipoingreso }}</td>
+                            <td>{{ $con->condicion}}</td>
+                            <td>{{ $con->empresa }}</td>
+                            <td>{{ $con->descripcion }}</td>
+                            <td> 
+
+                                @if ($con->archivo1 == 'Sin archivo' || $con->archivo1 == '')
+                                <button type="button" class="btn btn-light" disabled>
+                                    <i class="ace-icon fa fa-file-archive-o bigger-120"> Sin archivo</i> 
+                                </button>
+                                @else
+                                <a href="{{ asset('archivos/' . $con->archivo1) }}" target="blank">
+                                    <button type="button" class="btn btn-success">
+                                        <i class="ace-icon fa fa-file-archive-o bigger-120"> Ver archivo </i> 
+                                    </button>
+                                    </a>     
+                                @endif
+
+                                @if ($con->archivo2 == 'Sin archivo' || $con->archivo2 == '')
+                                <button type="button" class="btn btn-light" disabled>
+                                    <i class="ace-icon fa fa-file-archive-o bigger-120"> Sin archivo</i> 
+                                </button>
+                                @else
+                                <a href="{{ asset('archivos/' . $con->archivo2) }}" target="blank">
+                                    <button type="button" class="btn btn-success">
+                                        <i class="ace-icon fa fa-file-archive-o bigger-120"> Ver archivo </i> 
+                                    </button>
+                                    </a>     
+                                @endif
+
+                                @if ($con->archivo3 == 'Sin archivo' || $con->archivo3 == '')
+                                <button type="button" class="btn btn-light" disabled>
+                                    <i class="ace-icon fa fa-file-archive-o bigger-120"> Sin archivo</i> 
+                                </button>
+                                @else
+                                <a href="{{ asset('archivos/' . $con->archivo3) }}" target="blank">
+                                    <button type="button" class="btn btn-success">
+                                        <i class="ace-icon fa fa-file-archive-o bigger-120"> Ver archivo </i> 
+                                    </button>
+                                    </a>     
+                                @endif
+
                             </td>
-                            <td>{{ $cot->razonSocial }}</td>
-                            <td>{{ $cot->sucursal }}</td>
-                            <td>{{ $cot->marcaRefaccion }}</td>
-                            <td>{{ $cot->nombreTipoRefaccion }}</td>
-                            <td>{{ $cot->codigo }}</td>
-                            <td>{{ $cot->descripcion }}</td>
-                            <td>{{ $cot->modelo }}</td>
-                            <td>{{ $cot->tipoMoneda }}</td>
-                            <td>{{ $cot->piezas }}</td>
-                            <td>$ {{ number_format($cot->montofinanciamiento, 2, '.', ',') }}</td>
-                            <td>{{ $cot->notas }}</td>
-                        </tr>
-                            @endforeach
+                            <td>
+
+                            @if ($con->activo == 'Si')
+                            <!-- Opcion de edicion ↓ -->
+                            <a href="{{ route('editarIngreso', ['idoi' => $con->idoi]) }}">
+                                <button type="button" class="btn btn-info">
+                                    <i class="ace-icon fa fa-pencil bigger"></i>
+                                </button>
+                            </a>
+                            
+                            <!-- Eliminar Factura ↓-->
+                            <a href="{{ route('eliminarIngreso',['idoi'=>$con->idoi]) }}">
+                                <button type="button" class="btn btn-danger">
+                            <i class="ace-icon fa fa-trash bigger-120"></i> 
+                                </button>
+                            </a>
+                            @elseif ($con->activo == 'No')
+                            
+                            <!-- Restaurar Factura ↓-->
+                            <a href="{{ route('restaurarIngreso',['idoi'=>$con->idoi]) }}">
+                                <button type="button" class="btn btn-secondary">
+                                    <i class="ace-icon fa fa-refresh bigger-120"> Restaurar </i> 
+                                </button>
+                            </a>
+                            
+                            @endif
+                            </td>
+                          </tr>
+                              
+                          @endforeach 
                         </tbody>
                     </table>
-                    @endif
+                   
 
                 </div>
             </div>
         </div>
     </div>
 
+   
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/datetime/1.5.1/css/dataTables.dateTime.min.css">
@@ -106,10 +161,10 @@
     <script>
         $(document).ready(function() {
 
-           /* DataTable.ext.search.push(function(settings, data, dataIndex) {
+           DataTable.ext.search.push(function(settings, data, dataIndex) {
             let minDateStr = minDate.val();
             let maxDateStr = maxDate.val();
-            let dateStr = data[0];
+            let dateStr = data[1];
             let minDateMoment = moment(minDateStr, 'DD/MM/YYYY', true);
             let maxDateMoment = moment(maxDateStr, 'DD/MM/YYYY', true);
             let dateMoment = moment(dateStr, 'DD/MM/YYYY', true);
@@ -131,20 +186,20 @@
         });
         maxDate = new DateTime('#max', {
             format: 'DD/MM/YYYY'
-        });*/
+        });
 
 
-            $('#TablaSKUc thead tr').clone(true).addClass('filters').appendTo('#TablaSKUc thead');
-            var table = $('#TablaSKUc').DataTable({
-                //dom: 'Bfrtip',
-                dom: '<"row"<"col-sm-6"B><"col-sm-6"f>>rt<"row"<"col-sm-3"l><"col-sm-3"i><"col-sm-6"p>>',//En este dom se muestra el apartado de cuantos registros mostrar
+            $('#TablaOtros thead tr').clone(true).addClass('filters').appendTo('#TablaOtros thead');
+            var table = $('#TablaOtros').DataTable({
+                dom: 'Bfrtip',
+                //dom: '<"row"<"col-sm-6"B><"col-sm-6"f>>rt<"row"<"col-sm-3"l><"col-sm-3"i><"col-sm-6"p>>',//En este dom se muestra el apartado de cuantos registros mostrar
                 buttons: ['excel'],
                 orderCellsTop: true,
                 fixedHeader: true,
                 
                 scrollX: true,
                 order: [
-                    [0, "desc"]//Ordenar tabla
+                    [1, "desc"]//Ordenar tabla
                 ],
                 language: {
                 info:           "Mostrando _START_ a _END_ de _TOTAL_ registros",
@@ -162,6 +217,41 @@
                     first:'Inicio',
                     last:'Ultimo'
                 },
+                "datetime": {
+                    "previous": "Anterior",
+                    "next": "Próximo",
+                    "hours": "Horas",
+                    "minutes": "Minutos",
+                    "seconds": "Segundos",
+                    "unknown": "-",
+                    "amPm": [
+                        "AM",
+                        "PM"
+                    ],
+                    "months": {
+                        "0": "Enero",
+                        "1": "Febrero",
+                        "2": "Marzo",
+                        "3": "Abril",
+                        "4": "Mayo",
+                        "5": "Junio",
+                        "6": "Julio",
+                        "7": "Agosto",
+                        "8": "Septiembre",
+                        "9": "Octubre",
+                        "10": "Noviembre",
+                        "11": "Diciembre"
+                    },
+                    "weekdays": [
+                        "Dom",
+                        "Lun",
+                        "Mar",
+                        "Mié",
+                        "Jue",
+                        "Vie",
+                        "Sáb"
+                    ]
+                }
             },
                 initComplete: function() {
                     var api = this.api();
@@ -211,22 +301,12 @@
                     });
                 },
                 columnDefs: [
-                    {targets: 7,
-                    width: "150px",
-                    createdCell: function(td, cellData, rowData, rowIndex, colIndex) {
-                    $(td).css('text-align', 'justify'); // centrar el contenido de la celda
-                    }},
-                    {targets: 4,
-                    width: "150px",
-                    createdCell: function(td, cellData, rowData, rowIndex, colIndex) {
-                    $(td).css('text-align', 'left'); // centrar el contenido de la celda
-                    }},
                     {targets: 1,
                     type: 'date',
-                    width: "50px",
+                    width: "70px",
                     render: function (data, type, full, meta) {
                     if (type === 'sort' || type === 'type') {
-                        return moment(data, 'DD/MM/YYYY').format('YYYY-MM-DD');//Esto se agrega para que se muestre la fecha mas reciente primero
+                        return moment(data, 'DD/MM/YYYY').format('YYYY-MM-DD');//Esto se agrega para que el filtro funcione correctamente
                     }
                     return data;
                     },
@@ -234,40 +314,51 @@
                     $(td).css('text-align', 'center'); // centrar el contenido de la celda
                     }},
                     {targets: 2,
-                    width: "100px",
+                    width: "50px",
+                    createdCell: function(td, cellData, rowData, rowIndex, colIndex) {
+                    $(td).css('text-align', 'left'); // centrar el contenido de la celda
+                    }},
+                    {targets: 3,
+                    width: "50px",
+                    createdCell: function(td, cellData, rowData, rowIndex, colIndex) {
+                    $(td).css('text-align', 'center'); // centrar el contenido de la celda
+                    }},
+                    {targets: 4,
+                    width: "50px",
+                    createdCell: function(td, cellData, rowData, rowIndex, colIndex) {
+                    $(td).css('text-align', 'center'); // centrar el contenido de la celda
+                    }},
+                    {targets: 5,
+                    width: "110px",
+                    createdCell: function(td, cellData, rowData, rowIndex, colIndex) {
+                    $(td).css('text-align', 'left'); // centrar el contenido de la celda
+                    }},
+                    {targets: 6,
+                    width: "50px",
+                    createdCell: function(td, cellData, rowData, rowIndex, colIndex) {
+                    $(td).css('text-align', 'left'); // centrar el contenido de la celda
+                    }},
+                    {targets: 7,
+                    width: "50px",
+                    createdCell: function(td, cellData, rowData, rowIndex, colIndex) {
+                    $(td).css('text-align', 'left'); // centrar el contenido de la celda
+                    }},
+                    {targets: 8,
+                    width: "250px",
+                    createdCell: function(td, cellData, rowData, rowIndex, colIndex) {
+                    $(td).css('white-space', 'pre-line'); // Esto permite que el contenido tenga saltos de línea
+                    $(td).css('text-align', 'justify'); // Ajusta el texto a la izquierda, derecha, o justificarlo
+                    }},
+                    {targets: 9,
+                    width: "60px",
                     createdCell: function(td, cellData, rowData, rowIndex, colIndex) {
                     $(td).css('text-align', 'center'); // centrar el contenido de la celda
                     }},
                     {targets: 10,
-                    width: "50px",
+                    width: "60px",
                     createdCell: function(td, cellData, rowData, rowIndex, colIndex) {
                     $(td).css('text-align', 'center'); // centrar el contenido de la celda
                     }},
-                    {targets: 11,
-                    width: "50px",
-                    createdCell: function(td, cellData, rowData, rowIndex, colIndex) {
-                    $(td).css('text-align', 'center'); // centrar el contenido de la celda
-                    }},
-                    {targets: 12,
-                    width: "80px",
-                    createdCell: function(td, cellData, rowData, rowIndex, colIndex) {
-                    $(td).css('text-align', 'Justify'); // centrar el contenido de la celda
-                    }},
-                    {targets: 13,
-                    width: "450px",
-                    createdCell: function(td, cellData, rowData, rowIndex, colIndex) {
-                    $(td).css('text-align', 'justify'); // centrar el contenido de la celda
-                    }},
-                    {targets: 3,
-                    width: "250px",
-                    createdCell: function(td, cellData, rowData, rowIndex, colIndex) {
-                    $(td).css('text-align', 'justify'); // centrar el contenido de la celda
-                    }},
-                    {targets: 9,
-                    width: "20px",
-                    createdCell: function(td, cellData, rowData, rowIndex, colIndex) {
-                    $(td).css('text-align', 'justify'); // centrar el contenido de la celda
-                    }}
             ],
             // Mostrar los botones de paginacion
             pagingType: 'full_numbers',
@@ -275,8 +366,8 @@
             lengthMenu: [10,15,25,50,100],
             });
 
-           /* document.querySelectorAll('#min, #max').forEach((el) => {
-                el.addEventListener('change', () => $('#TablaOC').DataTable().draw());
+            document.querySelectorAll('#min, #max').forEach((el) => {
+                el.addEventListener('change', () => $('#TablaOtros').DataTable().draw());
             });
 
             $('.dt-buttons').appendTo($('#botonExcel').parent());
@@ -289,16 +380,14 @@
             var searchInput = $('.dataTables_filter input').clone(true);
 
         $('#searchContainer').append(searchInput);
-        */
+
+        
         });
     </script>
 
 
-
-
-
-    <style>
-       thead input {
+<style>
+    thead input {
         width: 100%;
     }
 
@@ -340,14 +429,23 @@
         font-size: 14px;
         border-radius: 5px;
     }
+    .boton {
+        width: 150px;
+        padding: 5px;
+        border: 1px solid #ffffff;
+        background-color: #126619;
+        color: #ffffff;
+        border-radius: 5px;
+    }
 
     .dataTables_wrapper .dataTables_filter {
-        display: true;
+        display: none;
     }
 
     .search-controls {
         width: 650px;
         text-align: right;
     }
-    </style>
+</style>
+
 @stop

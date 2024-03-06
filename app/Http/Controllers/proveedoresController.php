@@ -107,7 +107,7 @@ public function guardarProveedores(Request $request)
           $proveedor->paisProv = $request->paisProv;
           $proveedor->notasProv = $request->notasProv;
           $proveedor->usuarioProv = $request->usuarioProv;
-          $proveedor-> passwordProv = md5($request->passwordProv);
+          $proveedor->passwordProv = md5($request->passwordProv);
           $proveedor->correoProveedor = $request->correoProveedor;
           $proveedor->telefonoProveedor = $request->telefonoProveedor;
           $proveedor->telefonoProveedor2 = $request->telefonoProveedor2;
@@ -240,7 +240,10 @@ public function guardarProveedores(Request $request)
       $proveedor->paisProv = $request->paisProv;
       $proveedor->notasProv = $request->notasProv;
       $proveedor->usuarioProv = $request->usuarioProv;
+	  if ($request->passwordProv !="")
+	  {
       $proveedor-> passwordProv = md5($request->passwordProv);
+	  }
       $proveedor->correoProveedor = $request->correoProveedor;
       $proveedor->telefonoProveedor = $request->telefonoProveedor;
       $proveedor->telefonoProveedor2 = $request->telefonoProveedor2;

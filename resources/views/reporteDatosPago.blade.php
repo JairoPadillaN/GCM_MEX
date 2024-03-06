@@ -5,13 +5,14 @@
                                 align="center">
                                 <thead>
                                     <tr style=" background-color: #78e08f;">
-                                        <th style="width: 80px;">Número de factura</th>   
+                                        <th style="width: 80px;">Número de factura</th>
+                                        <th style="width: 80px;">Fecha de factura</th>   
                                         <th style="width: 80px;">Tipo de cambio facturado</th>
                                         <th style="width: 80px;">Saldo facturado</th> 
                                         <th style="width: 80px;">Subtotal facturado</th>
                                         <th style="width: 80px;">IVA facturado</th>
                                         <th style="width: 80px;">Monto facturado</th>
-                                        <th style="width: 80px;">Tipo de cambio pagado</th>
+                                        <th style="width: 80px;">Tipo de cambio pagado</th> 
                                         <th style="width: 80px;">Saldo real</th> 
                                         <th style="width: 80px;">Subtotal real</th>
                                         <th style="width: 80px;">IVA real</th>
@@ -29,6 +30,11 @@
                                     @foreach($consultaDatosPago as $dp)
                                     <tr>
                                         <td style="text-align: right;"> {{$dp->numeroFacturaDP}}</td>
+                                            @if($dp->fechafactura)
+                                        <td>{{ $dp->fechafactura->format('d/m/Y') }}</td>
+                                            @else
+                                        <td>Sin fecha de factura</td>
+                                            @endif
                                         <td style="text-align: right;">$ {{ number_format($dp->tipoCambioFac, 2 ) }}</td>
                                         <td style="text-align: right;">$ {{ number_format($dp->saldoFac, 2 ) }}</td>
                                         <td style="text-align: right;">$ {{ number_format($dp->subtotalFac, 2) }}</td>

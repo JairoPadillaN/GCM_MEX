@@ -114,6 +114,54 @@
                     'form').serialize());
                 e.preventDefault();
             });
+// Vendedores Asignados a Servicios
+
+function verificarCampos() {
+                var vendedorSeleccionado = $('select[name="vendedor"]').val();
+                var porcentaje = $('#porcentajeVendedor').val();
+                if (vendedorSeleccionado !== '' && porcentaje !== '') {
+                    $('#vendedorPorcentaje').prop('disabled', false);
+                } else {
+                    $('#vendedorPorcentaje').prop('disabled', true);
+                }
+            }
+
+            $('select[name="vendedor"]').change(function () {
+                verificarCampos();
+            });
+            
+            $('#porcentajeVendedor').on('input', function () {
+                verificarCampos();
+            });
+            
+            verificarCampos();
+
+            $("#vendedorPorcentaje").click(function() {
+                $.ajax({
+                    url: '{{ url('agregarVendedorPorcentaje') }}',
+                    type: 'GET',
+                    data: $(this).closest('form').serialize(),
+                    success: function(response) {
+                        if (response.mensaje) {
+                            alert(response.mensaje);
+                        } else {
+                            $("#reporteVendedoresPorcentaje").html(response);
+                            $("select[name='vendedor']").val("");
+                            $("input[name='porcentajeVendedor']").val("");
+                            verificarCampos();
+                        }},
+                        error: function(xhr, status, error) {
+                            console.error(xhr.responseText);
+                        }
+                    })
+                });
+
+
+            $('.borrarVendedorPorcentaje').click(
+                function() {
+                    $("#reporteVendedoresPorcentaje").load('{{ url('borrarVendedorPorcentaje') }}' + '?' + $(this).closest('form')
+                        .serialize());
+                });
 
         });
     </script>
@@ -331,7 +379,39 @@
                                 <div>
                                     {{ Form::text('totalConIva', $consulta->totalConIva, ['class' => 'form-control', 'placeholder' => 'Ejemplo: 1000']) }}
                                 </div>
+                                <br>
+                                @if (Session::get('sesiontipo') == 'Administrador')
+                                <div>
 
+                                    <div>
+                                        <h3>Vendedores asignados a servicios</h3>
+                                    </div>
+                                    <div class="sub-title">Vendedor:</div>
+                                    <div>
+                                    <select name="vendedor" class="form-control rounded-0">
+                                        <option value="" selected>Seleccione vendedor</option>
+                                        @foreach ($vendedores as $vendedor)
+                                        <option value="{{ $vendedor->idu }}"
+                                                {{ old('vendedores') == $vendedor->vendedor ? 'selected' : '' }}>
+                                                {{ $vendedor->vendedor }}
+                                            </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="sub-title">Porcentaje:</div>
+                                    <div>
+                                        <input type='text' name='porcentajeVendedor' class="form-control" id='porcentajeVendedor' value="" placeholder="Ejemplo: 10">
+                                    </div>
+                                    
+                                <br>
+                                <button type="button" class="btn btn-success" id="vendedorPorcentaje" disabled>
+                                    <span class="glyphicon glyphicon-plus-sign"></span> Agregar
+                                </button>
+                            </div>
+                            @else
+                            <div></div>
+                                @endif
                             </div>
 
                             <div class="form-group col-md-6">
@@ -412,12 +492,17 @@
                                         <div>
 
                                             @if ($consulta->estatusPago == 'Pagada')
-                                                Pagada
-                                                {{ Form::radio('estatusPago', 'Pagada', true, ['checked' => 'checked']) }}
+                                                Pagada {{ Form::radio('estatusPago', 'Pagada', true, ['checked' => 'checked']) }}
                                                 Pendiente {{ Form::radio('estatusPago', 'Pendiente por pagar', false, []) }}
-                                            @else
-                                                Pagada {{ Form::radio('estatusPago', 'Pagada') }}
-                                                Pendiente{{ Form::radio('estatusPago', 'Pendiente por pagar', true, ['checked' => 'checked']) }}
+                                                Cancelado {{ Form::radio('estatusPago', 'Cancelado', false, []) }}
+                                           @elseif($consulta->estatusPago == 'Pendiente por pagar' or $consulta->estatusPago == 'Pendiente' )
+                                                    Pagada {{ Form::radio('estatusPago', 'Pagada', false, []) }}
+                                                    Pendiente {{ Form::radio('estatusPago', 'Pendiente por pagar', true, ['checked' => 'checked']) }}
+                                                    Cancelado {{ Form::radio('estatusPago', 'Cancelado', false, []) }}
+                                           @elseif($consulta->estatusPago == 'Cancelado')
+                                                        Pagada {{ Form::radio('estatusPago', 'Pagada', false, []) }}
+                                                        Pendiente {{ Form::radio('estatusPago', 'Pendiente por pagar', false, []) }}
+                                                        Cancelado {{ Form::radio('estatusPago', 'Cancelado', true, ['checked' => 'checked']) }}
                                             @endif
 
                                         </div>
@@ -523,7 +608,56 @@
                                 </div>
 
                             </div>
+                            <br><br><br><br>
+                            @if (Session::get('sesiontipo') == 'Administrador')
+                            <div class="form-group col-md-12">
+                                <div id="reporteVendedoresPorcentaje">
+                                    <br>
+                                    @if ($cuantosVas == 0)
+                                        <br>
+                                        <div class="alert alert-warning" role="alert" align="center">
+                                            <label for="">Sin vendedores ni porcentajes asignados</label>
+                                        </div>
+                                    @else
 
+                                    <table class="table table-striped table-bordered table-hover" id="dataTables-example" style="width:90%" align="center">
+                                        <thead>
+                                            <tr style=" background-color: #78e08f;">
+                                                <th style="width: 80px;">Vendedor</th>
+                                                <th style="width: 80px;">Porcentaje</th>
+                                                <th style="width: 80px;">
+                                                    <center>Opciones</center>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($consultaVas as $vas)
+                                                <tr>
+                                                    <td style="text-align: center;"> {{ $vas->vendedor }}</td>
+                                                    <td style="text-align: center;"> {{ $vas->porcentaje }}%</td>
+                                                    <td align="center">
+                                                        <form action='' method='POST' enctype='application/x-www-form-urlencoded'>
+                                                            @csrf
+                                                            <input type="hidden" value="{{ $vas->idser }}" name="idFactura">
+                                                            <input type="hidden" value="{{ $vas->idvas }}" name="idvas">
+                                                            <button type="button" class="btn btn-sm btn-danger borrarVendedorPorcentaje"
+                                                                style='width:40px; height: 35px;'>
+                                                                <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                                            </button>
+                                
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                
+                                        </tbody>
+                                    </table>
+                                    @endif
+                                </div>
+                            </div>
+                            @else
+                            <div></div>
+                            @endif
 
                         </div>
                         <!--Segundo tab Datos de pago --->
@@ -609,191 +743,199 @@
                                     placeholder="Escribe las observaciones que consideres necesarias.">{!! $consulta->observacionesFactura !!}</textarea>
                             </div>
 
+<!-- CARRITO -->
+<div class="form-group col-md-6">
+                            <center>
+                                <div class="sub-title">Datos de pago:</div>
+                            </center>
+                            <br><br>
+                            <div class="sub-title">Número de factura:</div>
+                            <div>
+                                @if ($errors->first('numeroFacturaDP'))
+                                    <i> {{ $errors->first('numeroFacturaDP') }}</i>
+                                @endif
+                                {{ Form::text('numeroFacturaDP', old('numeroFacturaDP'), ['class' => 'form-control']) }}
+                            </div>
 
-                            <!-- CARRITO -->
-                            <div class="form-group col-md-6">
-                                <center>
-                                    <div class="sub-title">Datos de pago:</div>
-                                </center>
-                                <div class="sub-title">Número de factura:</div>
-                                <div>
-                                    @if ($errors->first('numeroFacturaDP'))
-                                        <i> {{ $errors->first('numeroFacturaDP') }}</i>
-                                    @endif
-                                    {{ Form::text('numeroFacturaDP', old('numeroFacturaDP'), ['class' => 'form-control']) }}
+                            <hr> <!-- linea de division -->
+
+                            <div class="sub-title">Monto Facturado</div>
+                            <div class="sub-title">Fecha de Factura:</div>
+                                    <div>
+                                         {{Form::date('fechafact',old('fechafact'),['class' => 'form-control'])}}
+                                    </div>
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    <div class="sub-title">Tipo de cambio facturado:</div>
+                                    <div>
+                                        @if ($errors->first('tipoCambioFac'))
+                                            <i> {{ $errors->first('tipoCambioFac') }}</i>
+                                        @endif
+                                        {{ Form::text('tipoCambioFac', old('tipoCambioFac'), [
+                                            'class' => 'form-control numeric-input',//<- Identifica a los campos numericos xd
+                                            'placeholder' => 'Ejemplo: 20.15', 
+                                            'id' => 'valorCambio']) }}
+                                    </div>
+
+                                    <div class="sub-title">Subtotal:</div>
+                                    <div>
+                                        @if ($errors->first('subtotalFac'))
+                                            <i> {{ $errors->first('subtotalFac') }}</i>
+                                        @endif
+                                        {{ Form::text('subtotalFac', old('subtotalFac'), ['class' => 'form-control', 'id' => 'subFacturado', 'readonly']) }}
+                                    </div>
                                 </div>
 
-                                <hr> <!-- linea de division -->
+                                <div class="form-group col-md-4">
+                                    <div class="sub-title">Saldo:</div>
+                                    <div>
+                                        @if ($errors->first('saldoFac'))
+                                            <i> {{ $errors->first('saldoFac') }}</i>
+                                        @endif
+                                        {{ Form::text('saldoFac', old('saldoFac'), [
+                                           'class' => 'form-control numeric-input',//<- este tambien es numerico
+                                            'placeholder' => 'Ejemplo: 3600', 
+                                            'id' => 'valorSaldo']) }}
+                                    </div>
+                                    <div class="sub-title">IVA:</div>
+                                    <div>
+                                        @if ($errors->first('ivaFac'))
+                                            <i> {{ $errors->first('ivaFac') }}</i>
+                                        @endif
+                                        {{ Form::text('ivaFac', old('ivaFac'), ['class' => 'form-control', 'id' => 'ivaFacturado', 'readonly']) }}
+                                    </div>
+                                </div>
 
-                                <div class="sub-title">Monto Facturado</div>
-                                <div class="row">
-                                    <div class="form-group col-md-4">
-                                        <div class="sub-title">Tipo de cambio facturado:</div>
-                                        <div>
-                                            @if ($errors->first('tipoCambioFac'))
-                                                <i> {{ $errors->first('tipoCambioFac') }}</i>
-                                            @endif
-                                            {{ Form::text('tipoCambioFac', old('tipoCambioFac'), [
-                                                'class' => 'form-control numeric-input',//<- Identifica a los campos numericos xd
-                                                'placeholder' => 'Ejemplo: 20.15', 
-                                                'id' => 'valorCambio']) }}
-                                        </div>
-
-                                        <div class="sub-title">Subtotal:</div>
-                                        <div>
-                                            @if ($errors->first('subtotalFac'))
-                                                <i> {{ $errors->first('subtotalFac') }}</i>
-                                            @endif
-                                            {{ Form::text('subtotalFac', old('subtotalFac'), ['class' => 'form-control', 'id' => 'subFacturado', 'readonly']) }}
-                                        </div>
+                                <div class="form-group col-md-4">
+                                    <br><br><br><br>
+                                    <div>
+                                        <input type="hidden" value="-">
                                     </div>
 
-                                    <div class="form-group col-md-4">
-                                        <div class="sub-title">Saldo:</div>
-                                        <div>
-                                            @if ($errors->first('saldoFac'))
-                                                <i> {{ $errors->first('saldoFac') }}</i>
-                                            @endif
-                                            {{ Form::text('saldoFac', old('saldoFac'), [
-                                               'class' => 'form-control numeric-input',//<- este tambien es numerico
-                                                'placeholder' => 'Ejemplo: 3600', 
-                                                'id' => 'valorSaldo']) }}
-                                        </div>
-                                        <div class="sub-title">IVA:</div>
-                                        <div>
-                                            @if ($errors->first('ivaFac'))
-                                                <i> {{ $errors->first('ivaFac') }}</i>
-                                            @endif
-                                            {{ Form::text('ivaFac', old('ivaFac'), ['class' => 'form-control', 'id' => 'ivaFacturado', 'readonly']) }}
-                                        </div>
+                                    <div class="sub-title">Monto Pesos:</div>
+                                    <div>
+                                        @if ($errors->first('montoPesosDP'))
+                                            <i> {{ $errors->first('montoPesosDP') }}</i>
+                                        @endif
+                                        {{ Form::text('montoPesosDP', old('montoPesosDP'), ['class' => 'form-control', 'id' => 'resultadoMonto', 'readonly']) }}
+                                    </div>
+                                </div>
+
+                            </div>
+                            <hr> <!-- linea de division -->
+                            <div class="sub-title">Pagado</div>
+                            <div class="row">
+                                <div class="form-group col-md-4">
+
+                                    {{Form::radio('pagada','Si')}}
+                                    <label class="form-check-label" for="inlineRadio1">Si</label>
+                                    &nbsp;&nbsp;&nbsp;
+
+                                    {{Form::radio('pagada','No', true)}}
+                                    <label class="form-check-label" for="inlineRadio2">No</label>
+                                </div>
+
+                            </div>
+
+                            <hr> <!-- linea de division -->
+                        </div>
+
+                        <br><br><br><br><br><br><br><br>
+                        <div class="form-group col-md-6">
+                            
+                    <p> </p>
+                    <p> </p>
+                    <div class="sub-title">Monto real</div>
+                    
+                    <div class="sub-title">Fecha de pago:</div>
+                    <div>
+                        {{Form::date('fechaDatosPago',old('fechaDatosPago'),['class' => 'form-control'])}}
+                    </div>
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    
+
+                                    <div class="sub-title">Tipo de cambio pagado:</div>
+                                    <div>
+                                        @if ($errors->first('tipoCambioPagado'))
+                                            <i> {{ $errors->first('tipoCambioPagado') }}</i>
+                                        @endif
+                                        {{ Form::text('tipoCambioPagado', old('tipoCambioPagado'), [
+                                            'class' => 'form-control numeric-input',//<- Y este
+                                            'placeholder' => 'Ejemplo: 19.30', 
+                                            'id' => 'tcPag']) }}
                                     </div>
 
-                                    <div class="form-group col-md-4">
-                                        <br><br><br><br>
-                                        <div>
-                                            <input type="hidden" value="-">
-                                        </div>
-
-                                        <div class="sub-title">Monto Pesos:</div>
-                                        <div>
-                                            @if ($errors->first('montoPesosDP'))
-                                                <i> {{ $errors->first('montoPesosDP') }}</i>
-                                            @endif
-                                            {{ Form::text('montoPesosDP', old('montoPesosDP'), ['class' => 'form-control', 'id' => 'resultadoMonto', 'readonly']) }}
-                                        </div>
+                                    <div class="sub-title">Subtotal:</div>
+                                    <div>
+                                        @if ($errors->first('subtotalFinal'))
+                                            <i> {{ $errors->first('subtotalFinal') }}</i>
+                                        @endif
+                                        {{ Form::text('subtotalFinal', old('subtotalFinal'), ['class' => 'form-control', 'placeholder' => 'Ejemplo: 20.15', 'id' => 'subtotalFinal', 'readonly']) }}
                                     </div>
 
                                 </div>
-                                <hr> <!-- linea de division -->
-                                <div class="sub-title">Pagado</div>
-                                <div class="row">
-                                    <div class="form-group col-md-4">
 
-                                        {{Form::radio('pagada','Si')}}
-                                        <label class="form-check-label" for="inlineRadio1">Si</label>
-                                        &nbsp;&nbsp;&nbsp;
-    
-                                        {{Form::radio('pagada','No', true)}}
-                                        <label class="form-check-label" for="inlineRadio2">No</label>
+                                <div class="form-group col-md-4">
+                                    <div class="sub-title">Saldo:</div>
+                                    <div>
+                                        @if ($errors->first('saldoReal'))
+                                            <i> {{ $errors->first('saldoReal') }}</i>
+                                        @endif
+                                        {{ Form::text('saldoReal', old('saldoReal'), [
+                                             'class' => 'form-control numeric-input',//<- Tambien este
+                                            'placeholder' => 'Ejemplo: 3600', 
+                                            'id' => 'valorSaldoR']) }}
                                     </div>
 
+                                    <div class="sub-title">IVA:</div>
+                                    <div>
+                                        @if ($errors->first('ivaFinal'))
+                                            <i> {{ $errors->first('ivaFinal') }}</i>
+                                        @endif
+                                        {{ Form::text('ivaFinal', old('ivaFinal'), ['class' => 'form-control', 'placeholder' => 'Ejemplo: 20.15', 'id' => 'ivaFinal', 'readonly']) }}
+                                    </div>
                                 </div>
 
-                                <hr> <!-- linea de division -->
+                                <div class="form-group col-md-4">
+                                    <br><br><br><br>
+                                    <div>
+                                        <input type="hidden" value="-">
+                                    </div>
+                                    <div class="sub-title">Monto Real:</div>
+                                    <div>
+                                        @if ($errors->first('montoReal'))
+                                            <i> {{ $errors->first('montoReal') }}</i>
+                                        @endif
+                                        {{ Form::text('montoReal', old('montoReal'), ['class' => 'form-control', 'id' => 'mReal', 'readonly']) }}
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <hr> <!-- linea de division -->
+                            <div class="sub-title">Diferencia cambiaría:</div>
+                            <div>
+                                @if ($errors->first('difCambiaria'))
+                                    <i> {{ $errors->first('difCambiaria') }}</i>
+                                @endif
+                                {{ Form::text('difCambiaria', old('difCambiaria'), ['class' => 'form-control', 'placeholder' => 'Ejemplo: 3600', 'id' => 'dif', 'readonly']) }}
+                            </div>
+                            <div class="sub-title">Observaciones:</div>
+                            <div>
+                                @if ($errors->first('observaciones'))
+                                    <i> {{ $errors->first('observaciones') }}</i>
+                                @endif
+                                <textarea name="observaciones" rows="5" class="form-control rounded-0"
+                                    placeholder="Escribe las observaciones que consideres necesarias."></textarea>
                             </div>
 
                             <br><br><br>
-                            <div class="form-group col-md-6">
-                            <div class="sub-title">Fecha de pago:</div>
-                        <div>
-                            {{Form::date('fechaDatosPago',old('fechaDatosPago'),['class' => 'form-control'])}}
+                            <button type="button" class="btn btn-success" id="datosPago">
+                                <span class="glyphicon glyphicon-plus-sign"></span> Agregar
+                            </button>
+
                         </div>
-                        <hr>
-                                <div class="row">
-                                    <div class="form-group col-md-4">
-                                        <div class="sub-title">Monto real</div>
-                                        <div class="sub-title">Tipo de cambio pagado:</div>
-                                        <div>
-                                            @if ($errors->first('tipoCambioPagado'))
-                                                <i> {{ $errors->first('tipoCambioPagado') }}</i>
-                                            @endif
-                                            {{ Form::text('tipoCambioPagado', old('tipoCambioPagado'), [
-                                                'class' => 'form-control numeric-input',//<- Y este
-                                                'placeholder' => 'Ejemplo: 19.30', 
-                                                'id' => 'tcPag']) }}
-                                        </div>
-
-                                        <div class="sub-title">Subtotal:</div>
-                                        <div>
-                                            @if ($errors->first('subtotalFinal'))
-                                                <i> {{ $errors->first('subtotalFinal') }}</i>
-                                            @endif
-                                            {{ Form::text('subtotalFinal', old('subtotalFinal'), ['class' => 'form-control', 'placeholder' => 'Ejemplo: 20.15', 'id' => 'subtotalFinal', 'readonly']) }}
-                                        </div>
-
-                                    </div>
-
-                                    <br><br>
-                                    <div class="form-group col-md-4">
-                                        <div class="sub-title">Saldo:</div>
-                                        <div>
-                                            @if ($errors->first('saldoReal'))
-                                                <i> {{ $errors->first('saldoReal') }}</i>
-                                            @endif
-                                            {{ Form::text('saldoReal', old('saldoReal'), [
-                                                 'class' => 'form-control numeric-input',//<- Tambien este
-                                                'placeholder' => 'Ejemplo: 3600', 
-                                                'id' => 'valorSaldoR']) }}
-                                        </div>
-
-                                        <div class="sub-title">IVA:</div>
-                                        <div>
-                                            @if ($errors->first('ivaFinal'))
-                                                <i> {{ $errors->first('ivaFinal') }}</i>
-                                            @endif
-                                            {{ Form::text('ivaFinal', old('ivaFinal'), ['class' => 'form-control', 'placeholder' => 'Ejemplo: 20.15', 'id' => 'ivaFinal', 'readonly']) }}
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group col-md-4">
-                                        <br><br><br><br>
-                                        <div>
-                                            <input type="hidden" value="-">
-                                        </div>
-                                        <div class="sub-title">Monto Real:</div>
-                                        <div>
-                                            @if ($errors->first('montoReal'))
-                                                <i> {{ $errors->first('montoReal') }}</i>
-                                            @endif
-                                            {{ Form::text('montoReal', old('montoReal'), ['class' => 'form-control', 'id' => 'mReal', 'readonly']) }}
-                                        </div>
-                                    </div>
-
-
-                                </div>
-                                <hr> <!-- linea de division -->
-                                <div class="sub-title">Diferencia cambiaría:</div>
-                                <div>
-                                    @if ($errors->first('difCambiaria'))
-                                        <i> {{ $errors->first('difCambiaria') }}</i>
-                                    @endif
-                                    {{ Form::text('difCambiaria', old('difCambiaria'), ['class' => 'form-control', 'placeholder' => 'Ejemplo: 3600', 'id' => 'dif', 'readonly']) }}
-                                </div>
-                                <div class="sub-title">Observaciones:</div>
-                                <div>
-                                    @if ($errors->first('observaciones'))
-                                        <i> {{ $errors->first('observaciones') }}</i>
-                                    @endif
-                                    <textarea name="observaciones" rows="5" class="form-control rounded-0"
-                                        placeholder="Escribe las observaciones que consideres necesarias."></textarea>
-                                </div>
-
-                                <br><br><br>
-                                <button type="button" class="btn btn-success" id="datosPago">
-                                    <span class="glyphicon glyphicon-plus-sign"></span> Agregar
-                                </button>
-
-                            </div>
                             <br><br><br><br>
                             <div class="form-group col-md-12">
                                 <div id="reporteDatosPago">
@@ -809,6 +951,7 @@
                                             <thead>
                                                 <tr style=" background-color: #78e08f;">
                                                     <th style="width: 80px;">Número de factura</th>
+                                                    <th style="width: 80px;">Fecha de factura</th>
                                                     <th style="width: 80px;">Tipo de cambio facturado</th>
                                                     <th style="width: 80px;">Saldo facturado</th>
                                                     <th style="width: 80px;">Subtotal facturado</th>
@@ -832,6 +975,11 @@
                                                 @foreach ($consultaDatosPago as $dp)
                                                     <tr>
                                                         <td style="text-align: right;"> {{ $dp->numeroFacturaDP }}</td>
+                                                        @if($dp->fechafactura)
+                                                        <td>{{ $dp->fechafactura->format('d/m/Y') }}</td>
+                                                        @else
+                                                        <td>Sin fecha de factura</td>
+                                                        @endif
                                                         <td style="text-align: right;">
                                                             ${{ number_format($dp->tipoCambioFac, 2) }}</td>
                                                         <td style="text-align: right;">
@@ -2685,7 +2833,7 @@
                                     <th>Subtotal</th>
                                     <th>Iva</th>
                                     <th>Isr</th>
-                                    <th>Total USD/MXN</th>
+                                    <th>Total USD/MXM</th>
                                     <th>Total MXN</th>
 									<th>Total MXN <br>
 									    Ajuste Complemento</th>
@@ -2702,8 +2850,7 @@
 FROM productosOrdenCompra AS poc
 INNER JOIN ordenCompra AS oc ON oc.idOrden = poc.idOrden
 WHERE oc.activo = 'Si' AND poc.idFactura = $idFactura) AS t1");
-
-                                    $montoTolantes = $consultaTol[0]->montopesos;
+                                     $montoTolantes = $consultaTol[0]->montopesos;
                                     $montoTol = $consultaTol[0]->montofinal;
 
                                 @endphp
@@ -3530,7 +3677,7 @@ WHERE oc.activo = 'Si' AND poc.idFactura = $idFactura) AS t1");
                                     <th>Subtotal</th>
                                     <th>Iva</th>
                                     <th>Isr</th>
-                                    <th>Total USD/MXN</th>
+                                    <th>Total USD/MXM</th>
                                     <th>Total MXN</th>
 									<th>Total MXN<BR>
 									Ajuste Complemento</th>
@@ -3548,7 +3695,7 @@ FROM productosOrdenCompra AS poc
 INNER JOIN ordenCompra AS oc ON oc.idOrden = poc.idOrden
 WHERE oc.activo = 'Si' AND poc.idFactura = $idFactura) AS t1");
 
-                                    $montoTolantes = $consultaTol[0]->montopesos;
+                                     $montoTolantes = $consultaTol[0]->montopesos;
 									$montoTol = $consultaTol[0]->montofinal;
 
                                 @endphp
@@ -3571,14 +3718,14 @@ WHERE oc.activo = 'Si' AND poc.idFactura = $idFactura) AS t1");
                                     <td align="right">${{ number_format($ConsO->isrDinero, 2, '.', ',')}}</td>
                                     <td align="right">${{ number_format($ConsO->precioProducto, 2, '.', ',')}}</td>
                                     <td align="right">${{ number_format($ConsO->montopesos, 2, '.', ',')}}</td>
-										@if ($ConsO->montofinal !="Pendiente Monto Final")
+									@if ($ConsO->montofinal !="Pendiente Monto Final")
 									<td align="right">${{ number_format($ConsO->montofinal, 2, '.', ',')}}</td>
 								    @else
 										<td align="right">{{$ConsO->montofinal}}</td>
 								    @endif
                                 </tr>
                                 @endforeach
-                                <tfoot style="background-color:#D6EAF8">
+                               <tfoot style="background-color:#D6EAF8">
                                     <th colspan="12" align="left">Total</th>
 								    <th align="right">MXN ${{ number_format($montoTolantes, 2) }}</th>
                                     <th align="right">MXN ${{ number_format($montoTol, 2) }}</th>
@@ -3673,8 +3820,9 @@ FROM productosOrdenCompra AS poc
 INNER JOIN ordenCompra AS oc ON oc.idOrden = poc.idOrden
 WHERE oc.activo = 'Si' AND poc.idFactura = $idFactura) AS t1");
 
-                                $montoPesosNuevo = $consultaNueva[0]->montopesos;
+                               $montoPesosNuevo = $consultaNueva[0]->montopesos;
                                 $montoPesosNuevo = $consultaNueva[0]->montofinal;
+
                             @endphp
                             @foreach ($consultaDP as $dp)
                                 <tbody>
@@ -3741,6 +3889,7 @@ WHERE oc.activo = 'Si' AND poc.idFactura = $idFactura) AS t1");
 
                                 $montoPesosNuevo = $consultaNueva[0]->montopesos;
                                 $montoPesosNuevo = $consultaNueva[0]->montofinal;
+
                             @endphp
                             @foreach ($consultaDP as $dp)
                                 <tbody>
@@ -3764,7 +3913,7 @@ WHERE oc.activo = 'Si' AND poc.idFactura = $idFactura) AS t1");
                                     </tr>
                                     @endif
                                 </tbody>
-                                @if ($consultaNueva == 0)
+                                 @if ($consultaNueva == 0)
                                 @php
 
                                 $primerOperacion = $dp->monto;
@@ -5316,6 +5465,27 @@ WHERE oc.activo = 'Si' AND poc.idFactura = $idFactura) AS t1");
     $("#agregarOrden").click(function() {
         $("#reporteOrden").load('{{ url('agregarOrden') }}' + '?' + $(this).closest('form').serialize());
     });
+
+    
+    jQuery("#porcentajeVendedor").on("input", function() {
+    var inputValue = jQuery(this).val();
+    var validInput = inputValue.replace(/[^0-9.]$/, '');
+    var partes = validInput.split('.');
+    partes[0] = partes[0].substring(0, 3);
+    if (partes[1]) {
+        partes[1] = partes[1].substring(0, 2);
+    }
+    validInput = partes.join('.');
+    if (validInput.startsWith('.')) {
+        validInput = '0' + validInput;
+    }
+    if (/^\d{1,3}(\.\d{0,2})?$/.test(validInput)) {
+        jQuery(this).val(validInput);
+    } else {
+    }
+});
+
+
 </script>
 
 <style>

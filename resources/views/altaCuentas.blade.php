@@ -54,7 +54,7 @@ $(document).ready(function() {
                             GCM <input id="empresaCuenta" type="radio" name="empresaCuenta" value="gcm"/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             C&M <input id="empresaCuenta" type="radio" name="empresaCuenta" value="cym" /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             SURJA <input id="empresaCuenta" type="radio" name="empresaCuenta" value="surja"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            CONTROL MOTION INC <input id="empresaCuenta" type="radio" name="empresaCuenta" value="cmin"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            
                             PEDRO OCEGUEDA <input id="empresaCuenta" type="radio" name="empresaCuenta" value="pedro"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             YANETH ABILENE <input id="empresaCuenta" type="radio" name="empresaCuenta" value="yaneth"/>
                         </div>

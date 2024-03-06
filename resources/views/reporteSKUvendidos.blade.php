@@ -16,12 +16,12 @@
     <div class="col-md-12">
         <div class="panel panel-default" style="margin-top:-45px">
             <div class="panel-heading">
-                <h1 class="">Reporte de SKU's en Cotización</h1>
+                <h1 class="">Reporte de SKU's vendidos por servicio</h1>
             </div>
             <br>
             <div class="panel-body">
                 <div id="list" class="table-responsive">
-                    <!--
+                    
                     <table border="0" cellspacing="5" cellpadding="5" class="date-table">
                         <tbody>
                             <tr>
@@ -41,58 +41,73 @@
                             </tr>
                         </tbody>
                     </table>
-                    -->
-                    @if ($cuantaCoti == 0)
-                    <br>
-                    <div class="alert alert-warning" role="alert" align="center">
-                        <label for="">¡Sin SKU's registrados!</label>
-                    </div> 
-                    @else
-                    <table id="TablaSKUc" class="table-bordered display">
+                    
+                    
+                    <table id="TablaSKUv" class="table-bordered display">
                         <thead>
                             <tr style="background-color: #C5EBFB">
-                                <th class="hidden">idcot</th>
-                                <th style="background-color: #C5EBFB;">Fecha Cotización</th><!-- 1 o pos 0 -->
+                                <!--<th class="hidden">idserv</th>-->
+                                <th style="background-color: #C5EBFB;">Servicios</th> <!-- 1 o pos 0 -->
+                                <th style="background-color: #C5EBFB;">Factura</th>
+                                <th style="background-color: #C5EBFB;">Fecha Factura</th>
+                                <th style="background-color: #C5EBFB;">Fecha Pago</th>
                                 <th style="background-color: #C5EBFB;">Número Cotización</th>
-                                <th style="background-color: #C5EBFB;">Cliente</th>
-                                <th style="background-color: #C5EBFB;">Sucutrsal</th>
-                                <th style="background-color: #C5EBFB;">Marca</th>
-                                <th style="background-color: #C5EBFB;">Tipo</th>
-                                <th style="background-color: #C5EBFB;">SKU</th>
-                                <th style="background-color: #C5EBFB;">Descripción</th>
+                                <th style="background-color: #C5EBFB;">Razón Social</th>
+                                <th style="background-color: #C5EBFB;">Sucursal</th>
+                                <th style="background-color: #C5EBFB;">Nombre Refacción</th>
+                                <th style="background-color: #C5EBFB;">Numero de parte</th>
+                                <th style="background-color: #C5EBFB;">Serie</th>
                                 <th style="background-color: #C5EBFB;">Modelo</th>
+                                <th style="background-color: #C5EBFB;">SKU</th>
+                                <th style="background-color: #C5EBFB;">Nombre Tipo Refacción</th>
+                                <th style="background-color: #C5EBFB;">Marca Refacción</th>
                                 <th style="background-color: #C5EBFB;">Moneda</th>
-                                <th style="background-color: #C5EBFB;">Cantidad</th>
-                                <th style="background-color: #C5EBFB;">Total</th>
-                                <th style="background-color: #C5EBFB;">Notas</th><!-- 13 o pos 12 -->
+                                <th style="background-color: #C5EBFB;">Piezas</th>
+                                <th style="background-color: #C5EBFB;">Monto Total (Pesos)</th>
+                                <th style="background-color: #C5EBFB;">Como se Cotizó</th>
+                                <th style="background-color: #C5EBFB;">Notas</th><!-- 19 o pos 18 -->
                             </tr>
                         </thead> 
                         <tbody>
-                            @foreach ($cotizacion as $cot)
-                        <tr>
-                            <td class="hidden">{{ $cot->idCotizacion }}</td>
-                            <td>{{ \Carbon\Carbon::parse($cot->fechacotizacion)->format('d/m/Y') }}</td>
-                            <td>
-                                <a href="pdfCotizacion?idCotizacion={{ $cot->idCotizacion }}&verTotal=Si&pld=1&cD=Si" target="_blank">
-                                    {{ $cot->numeroCotizacion }}
-                                </a>
-                            </td>
-                            <td>{{ $cot->razonSocial }}</td>
-                            <td>{{ $cot->sucursal }}</td>
-                            <td>{{ $cot->marcaRefaccion }}</td>
-                            <td>{{ $cot->nombreTipoRefaccion }}</td>
-                            <td>{{ $cot->codigo }}</td>
-                            <td>{{ $cot->descripcion }}</td>
-                            <td>{{ $cot->modelo }}</td>
-                            <td>{{ $cot->tipoMoneda }}</td>
-                            <td>{{ $cot->piezas }}</td>
-                            <td>$ {{ number_format($cot->montofinanciamiento, 2, '.', ',') }}</td>
-                            <td>{{ $cot->notas }}</td>
-                        </tr>
-                            @endforeach
+                          @foreach ($vendido as $ven)
+                          <tr>
+                            <td>{{ $ven->idservicios }}</td>
+
+                            @if ($ven->factura == null)
+                            <td>Sin factura</td>                                    
+                            @else
+                            <td>{{ $ven->factura }}</td>
+                            @endif
+
+                            <td>{{ \Carbon\Carbon::parse($ven->fechafactura)->format('d/m/Y') }}</td>
+
+                            @if($ven->fechapago == NULL)
+                            <td>Sin fecha de pago</td>
+                            @else
+                            <td>{{ \Carbon\Carbon::parse($ven->fechapago)->format('d/m/Y') }}</td>
+                            @endif
+
+                            <td>{{ $ven->numerocotizacion }}</td>
+                            <td>{{ $ven->razonsocial }}</td>
+                            <td>{{ $ven->sucursal }}</td>
+                            <td>{{ $ven->nombrerefaccion }}</td>
+                            <td>{{ $ven->numeroparte }}</td>
+                            <td>{{ $ven->serie }}</td>
+                            <td>{{ $ven->modelo }}</td>
+                            <td>{{ $ven->sku}}</td>
+                            <td>{{ $ven->nombreTipoRefaccion }}</td>
+                            <td>{{ $ven->marcarefaccion }}</td>
+                            <td>{{ $ven->moneda }}</td>
+                            <td>{{ $ven->piezas }}</td>
+                            <td>$ {{ number_format($ven->montototalpesos, 2, '.', ',') }}</td>
+                            <td>{{ $ven->comosecotizo}}</td>
+                            <td>{{ $ven->notas}}</td>
+                          </tr>
+                              
+                          @endforeach 
                         </tbody>
                     </table>
-                    @endif
+                   
 
                 </div>
             </div>
@@ -106,10 +121,10 @@
     <script>
         $(document).ready(function() {
 
-           /* DataTable.ext.search.push(function(settings, data, dataIndex) {
+           DataTable.ext.search.push(function(settings, data, dataIndex) {
             let minDateStr = minDate.val();
             let maxDateStr = maxDate.val();
-            let dateStr = data[0];
+            let dateStr = data[2];
             let minDateMoment = moment(minDateStr, 'DD/MM/YYYY', true);
             let maxDateMoment = moment(maxDateStr, 'DD/MM/YYYY', true);
             let dateMoment = moment(dateStr, 'DD/MM/YYYY', true);
@@ -131,13 +146,13 @@
         });
         maxDate = new DateTime('#max', {
             format: 'DD/MM/YYYY'
-        });*/
+        });
 
 
-            $('#TablaSKUc thead tr').clone(true).addClass('filters').appendTo('#TablaSKUc thead');
-            var table = $('#TablaSKUc').DataTable({
-                //dom: 'Bfrtip',
-                dom: '<"row"<"col-sm-6"B><"col-sm-6"f>>rt<"row"<"col-sm-3"l><"col-sm-3"i><"col-sm-6"p>>',//En este dom se muestra el apartado de cuantos registros mostrar
+            $('#TablaSKUv thead tr').clone(true).addClass('filters').appendTo('#TablaSKUv thead');
+            var table = $('#TablaSKUv').DataTable({
+                dom: 'Bfrtip',
+                //dom: '<"row"<"col-sm-6"B><"col-sm-6"f>>rt<"row"<"col-sm-3"l><"col-sm-3"i><"col-sm-6"p>>',//En este dom se muestra el apartado de cuantos registros mostrar
                 buttons: ['excel'],
                 orderCellsTop: true,
                 fixedHeader: true,
@@ -162,6 +177,41 @@
                     first:'Inicio',
                     last:'Ultimo'
                 },
+                "datetime": {
+                    "previous": "Anterior",
+                    "next": "Próximo",
+                    "hours": "Horas",
+                    "minutes": "Minutos",
+                    "seconds": "Segundos",
+                    "unknown": "-",
+                    "amPm": [
+                        "AM",
+                        "PM"
+                    ],
+                    "months": {
+                        "0": "Enero",
+                        "1": "Febrero",
+                        "2": "Marzo",
+                        "3": "Abril",
+                        "4": "Mayo",
+                        "5": "Junio",
+                        "6": "Julio",
+                        "7": "Agosto",
+                        "8": "Septiembre",
+                        "9": "Octubre",
+                        "10": "Noviembre",
+                        "11": "Diciembre"
+                    },
+                    "weekdays": [
+                        "Dom",
+                        "Lun",
+                        "Mar",
+                        "Mié",
+                        "Jue",
+                        "Vie",
+                        "Sáb"
+                    ]
+                }
             },
                 initComplete: function() {
                     var api = this.api();
@@ -211,19 +261,19 @@
                     });
                 },
                 columnDefs: [
-                    {targets: 7,
-                    width: "150px",
+                    {targets: 0,
+                    width: "50px",
                     createdCell: function(td, cellData, rowData, rowIndex, colIndex) {
-                    $(td).css('text-align', 'justify'); // centrar el contenido de la celda
-                    }},
-                    {targets: 4,
-                    width: "150px",
-                    createdCell: function(td, cellData, rowData, rowIndex, colIndex) {
-                    $(td).css('text-align', 'left'); // centrar el contenido de la celda
+                    $(td).css('text-align', 'center'); // centrar el contenido de la celda
                     }},
                     {targets: 1,
-                    type: 'date',
                     width: "50px",
+                    createdCell: function(td, cellData, rowData, rowIndex, colIndex) {
+                    $(td).css('text-align', 'center'); // centrar el contenido de la celda
+                    }},
+                    {targets: 2,
+                    type: 'date',
+                    width: "70px",
                     render: function (data, type, full, meta) {
                     if (type === 'sort' || type === 'type') {
                         return moment(data, 'DD/MM/YYYY').format('YYYY-MM-DD');//Esto se agrega para que se muestre la fecha mas reciente primero
@@ -233,38 +283,83 @@
                     createdCell: function(td, cellData, rowData, rowIndex, colIndex) {
                     $(td).css('text-align', 'center'); // centrar el contenido de la celda
                     }},
-                    {targets: 2,
+                    {targets: 3,
+                    width: "70px",
+                    createdCell: function(td, cellData, rowData, rowIndex, colIndex) {
+                    $(td).css('text-align', 'center'); // centrar el contenido de la celda
+                    }},
+                    {targets: 4,
                     width: "100px",
                     createdCell: function(td, cellData, rowData, rowIndex, colIndex) {
                     $(td).css('text-align', 'center'); // centrar el contenido de la celda
                     }},
-                    {targets: 10,
-                    width: "50px",
+                    {targets: 5,
+                    width: "110px",
                     createdCell: function(td, cellData, rowData, rowIndex, colIndex) {
-                    $(td).css('text-align', 'center'); // centrar el contenido de la celda
+                    $(td).css('text-align', 'left'); // centrar el contenido de la celda
                     }},
-                    {targets: 11,
-                    width: "50px",
+                    {targets: 6,
+                    width: "110px",
                     createdCell: function(td, cellData, rowData, rowIndex, colIndex) {
-                    $(td).css('text-align', 'center'); // centrar el contenido de la celda
+                    $(td).css('text-align', 'left'); // centrar el contenido de la celda
                     }},
-                    {targets: 12,
-                    width: "80px",
-                    createdCell: function(td, cellData, rowData, rowIndex, colIndex) {
-                    $(td).css('text-align', 'Justify'); // centrar el contenido de la celda
-                    }},
-                    {targets: 13,
-                    width: "450px",
-                    createdCell: function(td, cellData, rowData, rowIndex, colIndex) {
-                    $(td).css('text-align', 'justify'); // centrar el contenido de la celda
-                    }},
-                    {targets: 3,
+                    {targets: 7,
                     width: "250px",
                     createdCell: function(td, cellData, rowData, rowIndex, colIndex) {
-                    $(td).css('text-align', 'justify'); // centrar el contenido de la celda
+                    $(td).css('text-align', 'left'); // centrar el contenido de la celda
+                    }},
+                    {targets: 8,
+                    width: "110px",
+                    createdCell: function(td, cellData, rowData, rowIndex, colIndex) {
+                    $(td).css('text-align', 'left'); // centrar el contenido de la celda
                     }},
                     {targets: 9,
-                    width: "20px",
+                    width: "60px",
+                    createdCell: function(td, cellData, rowData, rowIndex, colIndex) {
+                    $(td).css('text-align', 'justify'); // centrar el contenido de la celda
+                    }},
+                    {targets: 10,
+                    width: "60px",
+                    createdCell: function(td, cellData, rowData, rowIndex, colIndex) {
+                    $(td).css('text-align', 'justify'); // centrar el contenido de la celda
+                    }},
+                    {targets: 11,
+                    width: "60px",
+                    createdCell: function(td, cellData, rowData, rowIndex, colIndex) {
+                    $(td).css('text-align', 'justify'); // centrar el contenido de la celda
+                    }},
+                    {targets: 12,
+                    width: "60px",
+                    createdCell: function(td, cellData, rowData, rowIndex, colIndex) {
+                    $(td).css('text-align', 'justify'); // centrar el contenido de la celda
+                    }},
+                    {targets: 13,
+                    width: "60px",
+                    createdCell: function(td, cellData, rowData, rowIndex, colIndex) {
+                    $(td).css('text-align', 'justify'); // centrar el contenido de la celda
+                    }},
+                    /*{targets: 14,
+                    width: "60px",
+                    createdCell: function(td, cellData, rowData, rowIndex, colIndex) {
+                    $(td).css('text-align', 'justify'); // centrar el contenido de la celda
+                    }},*/
+                    /*{targets: 15,
+                    width: "10px",
+                    createdCell: function(td, cellData, rowData, rowIndex, colIndex) {
+                    $(td).css('text-align', 'justify'); // centrar el contenido de la celda
+                    }},*/
+                    {targets: 16,
+                    width: "80px",
+                    createdCell: function(td, cellData, rowData, rowIndex, colIndex) {
+                    $(td).css('text-align', 'left'); // centrar el contenido de la celda
+                    }},
+                    {targets: 17,
+                    width: "120px",
+                    createdCell: function(td, cellData, rowData, rowIndex, colIndex) {
+                    $(td).css('text-align', 'left'); // centrar el contenido de la celda
+                    }},
+                    {targets: 18,
+                    width: "450px",
                     createdCell: function(td, cellData, rowData, rowIndex, colIndex) {
                     $(td).css('text-align', 'justify'); // centrar el contenido de la celda
                     }}
@@ -275,8 +370,8 @@
             lengthMenu: [10,15,25,50,100],
             });
 
-           /* document.querySelectorAll('#min, #max').forEach((el) => {
-                el.addEventListener('change', () => $('#TablaOC').DataTable().draw());
+            document.querySelectorAll('#min, #max').forEach((el) => {
+                el.addEventListener('change', () => $('#TablaSKUv').DataTable().draw());
             });
 
             $('.dt-buttons').appendTo($('#botonExcel').parent());
@@ -289,16 +384,12 @@
             var searchInput = $('.dataTables_filter input').clone(true);
 
         $('#searchContainer').append(searchInput);
-        */
         });
     </script>
 
 
-
-
-
-    <style>
-       thead input {
+<style>
+    thead input {
         width: 100%;
     }
 
@@ -342,12 +433,13 @@
     }
 
     .dataTables_wrapper .dataTables_filter {
-        display: true;
+        display: none;
     }
 
     .search-controls {
         width: 650px;
         text-align: right;
     }
-    </style>
+</style>
+
 @stop

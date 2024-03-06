@@ -10,7 +10,7 @@
     <li class="" id='tab2' style="visibility:visible;"><a href="#2" data-toggle="tab"><label for="">Equipos asignados</label></a></li>
 </ul>
 
-<form id="form_ev">
+<!-- <form id="form_ev"> -->
     <div class="tab-content">
         <div class="tab-pane active" id="1">
             <div id='a'></div>
@@ -314,7 +314,7 @@
                 </div>
             </div>
         </div>
-
+{{Form::close()}}
         <div class="tab-pane fade" id="2">
             <div class="container-fluid">
                 <br>
@@ -506,7 +506,7 @@
                                                     </font>
                                                 </td>
                                                 <td align="center">
-                                                    <form id='' method='POST' enctype='application/x-www-form-urlencoded' target='_self'>
+                                                    <form>
                                                         @csrf
                                                         {{Form::hidden('numeroCotizacionB',$cotizacionEditar1->numeroCotizacion,['class' => 'form-control rounded-0', 'readonly'])}}
                                                         {{Form::hidden('tipoCotizacionB',$equiposNYp->tipoCotizacion,['class' => 'form-control rounded-0', 'readonly'])}}
@@ -541,7 +541,7 @@
             </div>            
         </div>
     </div>
-</form>
+<!-- </form> -->
 <script>
 $("#idu").change(function(e) {
     var comboUsuario = document.getElementById("idu");

@@ -18,7 +18,15 @@
             </div>
 
             <div class="panel-body" style="overflow-x: auto">
-
+            @if (Session::get('sesiontipo') == 'Contador')
+                    
+                    @else
+                    <div class="row">
+                        <div class="col-md-3">
+                            <a href="{{url('altaArchivoUnico')}}" type="button" class="btn btn-success"><i class="fa-solid fa-plus"></i> Nuevo</a>
+                        </div>
+                    </div>
+                    @endif
                 <div class="row">
                     <div class="col-md-3">
                         <a href="{{url('altaArchivoUnico')}}" type="button" class="btn btn-success"><i class="fa-solid fa-plus"></i> Nuevo</a>

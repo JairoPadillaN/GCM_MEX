@@ -69,7 +69,7 @@
             @elseif($publicidad == "6")
                 <img src="{!! asset('archivos/membreteCYMgroup.jpeg')!!}" style="height:95px; width:100%; margin-left:10px">
             @else
-                <img src="{!! asset('archivos/membrete.jpeg')!!}" style="height:86px; width:100%; margin-left:10px">
+                <img src="{!! asset('archivos/membrete.jpeg')!!}" style="height:95px; width:100%; margin-left:10px">
             @endif
         </div>    
         <div id="footer">

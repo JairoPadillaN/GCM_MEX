@@ -9,22 +9,13 @@
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
 |
- */
-use Illuminate\Support\Facades\Artisan;
-
-use App\viajes;
-use App\Http\Controllers\ArchivosUnicosController;
-
-Route::get('26_36_appyt-26',function(){
-	Artisan::call('cache:clear');
-	Artisan::call('config:cache');
-	Artisan::call('view:clear');
-	return 'cache';
-});
-
+*/
+ use App\viajes;
 Route::get('/', function () {
     return view('portada');
 });
+
+
 
 // RFQs
 Route::get('reporteRfqs', 'rfqController@reporteRfqs')->name('reporteRfqs');
@@ -72,16 +63,22 @@ Route::get('tablaCancelados', 'rfqController@tablaCancelados')->name('tablaCance
 Route::get('reporteOrdenesCompra2', 'ordenCompraController@reporteOrdenesCompra2')->name('reporteOrdenesCompra2');
 Route::get('tablaOrdenesActivas', 'ordenCompraController@tablaOrdenesActivas')->name('tablaOrdenesActivas');
 Route::get('tablaOrdenesCanceladas', 'ordenCompraController@tablaOrdenesCanceladas')->name('tablaOrdenesCanceladas');
+
 Route::get('editarProductoOrden', 'ordenCompraController@editarProductoOrden')->name('editarProductoOrden');
 Route::post('guardarModifProductoOrden', 'ordenCompraController@guardarModifProductoOrden')->name('guardarModifProductoOrden');
 
-Route::get('reporteGastosOperativos', 'reporteDeGastozController@reporteGastosOperativos')->name('reporteGastosOperativos');
-Route::get('reporteCostoVenta', 'reporteDeGastozController@reporteCostoVenta')->name('reporteCostoVenta');
-
 Route::get('guardarCostoEnvio', 'partesVentaController@guardarCostoEnvio')->name('guardarCostoEnvio');
 Route::get('borrarCostoEnvio','partesVentaController@borrarCostoEnvio')->name('borrarCostoEnvio');
+
+//Rutas reporte de ventas (Excel) Servicios->Reportes->Reporte global de ventas
+Route::get('reporteGlobalVentas', function(){ return view('reporteGlobalVentas');})->name('reporteGlobalVentas');
+Route::get('reporteGVentas', 'reporteDeGastozController@reporteGVentas')->name('reporteGVentas');
+
+Route::get('reporteGastosOperativos', 'reporteDeGastozController@reporteGastosOperativos')->name('reporteGastosOperativos');
+Route::get('reporteCostoVenta', 'reporteDeGastozController@reporteCostoVenta')->name('reporteCostoVenta');
 // Modal detalle
 Route::get('modalDetalle', 'rfqController@modalDetalle')->name('modalDetalle');
+
 //Cardex
 Route::get('reporteCardex/{idrfq}', 'CardexController@show')->name('reporteCardex');
 //Notificaciones
@@ -103,9 +100,22 @@ Route::get('reporteDetalle', 'ArchivoscontableController@reporteDetalle')->name(
 
 //Reporte SKU Cotizaciones
 Route::get('reporteSKUCotizacion','reporteSKUServicioController@reporteSKUCotizacion')->name('reporteSKUCotizacion');
+
+//Reporte SKU top Ventas
 Route::get('reporteTopVentas','reporteSKUServicioController@reporteSKUTotalizado')->name('reporteTopVentas');
 Route::get('reporteTopVentasFiltro','reporteSKUServicioController@reporteSKUTotalizadoFiltro')->name('reporteTopVentas.filtro');
-/* Route::post('/reporteSKUTotalizado','reporteSKUServicioController@reporteSKUTotalizadoFiltro')->name('reporteSKUTotalizado.filtro'); */
+
+//Reporte SKU Vendidos por servicio
+Route::get('skuVendido', 'reporteSKUServicioController@skuVendido')->name('skuVendido');
+
+//Otros Ingresos
+Route::get('reporteOtrosing', 'OtrosIngresosController@reporteOtrosing')->name('reporteOtrosing');
+Route::get('altaIngresos', 'OtrosIngresosController@altaIngresos')->name('altaIngresos');
+Route::post('guardarIngreso', 'OtrosIngresosController@guardarIngreso')->name('guardarIngreso');
+Route::get('editarIngreso/{idoi}', 'OtrosIngresosController@editarIngreso')->name('editarIngreso');
+Route::post('modificarIngreso', 'OtrosIngresosController@modificarIngreso')->name('modificarIngreso');
+Route::get('eliminarIngreso/{idoi}', 'OtrosIngresosController@eliminarIngreso')->name('eliminarIngreso');
+Route::get('restaurarIngreso/{idoi}', 'OtrosIngresosController@restaurarIngreso')->name('restaurarIngreso');
 
 //CRUD CITAS
 Route::get('altaCitas','CitasController@altaCitas')->name('altaCitas');
@@ -320,6 +330,11 @@ Route::get('downloadPago','facturasController@downloadPago')->name('downloadPago
 Route::get('/export', 'HomeController@export');
 Route::get('/expor', 'HomeController@expor');
 
+//Reporte facturas de Pruebas (New)
+Route::get('reporteFacturacion','facturasController@reporteFacturacion')->name('reporteFacturacion');
+
+Route::get('agregarVendedorPorcentaje','facturasController@agregarVendedorPorcentaje')->name('agregarVendedorPorcentaje');
+Route::get('borrarVendedorPorcentaje','facturasController@borrarVendedorPorcentaje')->name('borrarVendedorPorcentaje');
 //Archivos facturas
 
 Route::get('formulario', 'archivosController@index');
@@ -611,6 +626,7 @@ Route::get('comboPartes','cotizacionesController@comboPartes')->name('comboParte
 Route::get('precioParte','cotizacionesController@precioParte')->name('precioParte');
 Route::get('modeloParte','cotizacionesController@modeloParte')->name('modeloParte');
 Route::get('descripcionParte','cotizacionesController@descripcionParte')->name('descripcionParte');
+Route::get('fechaActualizacionParte','cotizacionesController@fechaActualizacionParte')->name('fechaActualizacionParte');
 Route::get('notaInternaYskuEquivalente','cotizacionesController@notaInternaYskuEquivalente')->name('notaInternaYskuEquivalente');
 Route::get('semanasEntregaParte','cotizacionesController@semanasEntregaParte')->name('semanasEntregaParte');
 Route::get('agregarRefaccionParteCotizaciones','cotizacionesController@agregarRefaccionParteCotizaciones')->name('agregarRefaccionParteCotizaciones');
@@ -847,9 +863,9 @@ Route::get('altaCuentas','cuentasController@altaCuentas')->name('altaCuentas');
 Route::POST('guardarCuentas','cuentasController@guardarCuentas')->name('guardarCuentas');
 Route::get('reporteCuentas','cuentasController@reporteCuentas')->name('reporteCuentas');
 Route::get('reporteCuentasAbajo','cuentasController@reporteCuentasAbajo')->name('reporteCuentasAbajo');
-Route::get('eliminarCuentas/{idCuentas}','cuentasController@eliminarCuentas')->name('eliminarCuentas');
-Route::get('restaurarCuentas/{idCuentas}','cuentasController@restaurarCuentas')->name('restaurarCuentas');
-Route::get('modificarCuentas/{idCuentas}','cuentasController@modificarCuentas')->name('modificarCuentas');
+Route::get('eliminarCuentas/{idCuenta}','cuentasController@eliminarCuentas')->name('eliminarCuentas');
+Route::get('restaurarCuentas/{idCuenta}','cuentasController@restaurarCuentas')->name('restaurarCuentas');
+Route::get('modificarCuentas/{idCuenta}','cuentasController@modificarCuentas')->name('modificarCuentas');
 Route::POST('editarCuentas','cuentasController@editarCuentas')->name('editarCuentas');
 Route::get('agregarCuentaProv','cuentasController@agregarCuentaProv')->name('agregarCuentaProv');
 Route::get('borrarCuentaProv','cuentasController@borrarCuentaProv')->name('borrarCuentaProv');
@@ -883,7 +899,7 @@ Route::get('restaurarOrden/{idOrden}','ordenCompraController@restaurarOrden')->n
 Route::get('cargarModalDetalleOrden','ordenCompraController@cargarModalDetalleOrden')->name('cargarModalDetalleOrden');
 Route::get('reporteProductosEnOC','ordenCompraController@reporteProductosEnOC')->name('reporteProductosEnOC');
 Route::get('reporteProductosEnNotaEntrada','ordenCompraController@reporteProductosEnNotaEntrada')->name('reporteProductosEnNotaEntrada');
-//Route::get('consultaProductosOC','ordenCompraController@consultaProductosOC')->name('consultaProductosOC');
+Route::get('consultaProductosOC','ordenCompraController@consultaProductosOC')->name('consultaProductosOC');
 Route::post('consultaParaExcelOC','ordenCompraController@consultaParaExcelOC')->name('consultaParaExcelOC');
 Route::post('excelOrdenesCompra','ordenCompraController@excelOrdenesCompra')->name('excelOrdenesCompra');
 Route::post('consultaSumaTotales','ordenCompraController@consultaSumaTotales')->name('consultaSumaTotales');
@@ -996,6 +1012,7 @@ Route::post('bajaLogicaComprobanteOperativo/{id}', 'gastosOperativosController@b
 Route::post('gastosOperativosEmpresa/{id}', 'gastosOperativosController@gastosOperativosEmpresa')->name("GastosOperativosEmpresa");
 Route::GET('baja_logica_go/{id}', 'gastosOperativosController@baja_logica')->name('baja_logica_go');
 Route::get('excel_gastos_operativos/{fechaInicio}/{fechaFin}/{filtro}/{value}','gastosOperativosController@exportar_excel_gastosOperativos')->name('excelGastosOperativos');
+Route::get('gastosOperativos2', 'gastosOperativosController@ind')->name('GastosOperativos2');
 
 //Cuentas contables 
 Route::get('reporteCuentasContables','cuentasContablesController@reporteCuentasContables')->name('reporteCuentasContables');
@@ -1054,7 +1071,6 @@ Route::POST('excelReporteGastoz','reporteDeGastozController@excelReporteGastoz')
 Route::get('reporteGeneralGastos','reporteGastosGeneralController@reporteGastosGeneral')->name('reporteGeneralGastos');
 Route::get('reporteGeneralGastosAbajo','reporteGastosGeneralController@reporteGeneralGastosAbajo')->name('reporteGeneralGastosAbajo');
 Route::POST('excelGastosGeneral','reporteGastosGeneralController@excelGastosGeneral')->name('excelGastosGeneral');
-
 //*Catalogo Archivos Unicos
 Route::get('/archivosUnicos','ArchivosUnicosController@index')->name('archivosUnicos');
 Route::get('altaArchivoUnico','ArchivosUnicosController@AltaArchivoUnico')->name('altaArchivoUnico');
@@ -1064,9 +1080,6 @@ Route::get('verArchivoUnico','ArchivosUnicosController@editarArUn')->name('verAr
 Route::POST('editarArchivoUnico','ArchivosUnicosController@editarArchivoUnico')->name('editarArchivoUnico');
 Route::get('eliminarArchivoUnico/{id}','ArchivosUnicosController@desactivarArchivoUnico')->name('eliminarArchivoUnico');
 Route::get('obtenerArchivoUnico/{id}','ArchivosUnicosController@obtenerArchivoUnico')->name('obtenerArchivoUnico');
-
-
-
 
 // Pagina Web
 Route::get('iniciopagina', function () {

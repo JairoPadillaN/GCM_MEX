@@ -27,18 +27,40 @@ class gastosOperativosController extends Controller
         $sname = Session::get('sesionname');
         $sidu = Session::get('sesionidu');
         $stipo = Session::get('sesiontipo');
-
-        if($sname == '' or $sidu == '' or $stipo == ''){
-            Session::flash('error', 'Es necesario logearse antes de continar');
+    
+        if ($sname == '' or $sidu == '' or $stipo == '') {
+            Session::flash('error', 'Es necesario logearse antes de continuar');
             return redirect()->route('login');
-        }else{
+        } else {
             $gastos = GastosOperativos::all();
-            $bancos=\DB::select("SELECT idb,nombre FROM bancos WHERE activo='si'");
-            $cuentas=\DB::select("SELECT * FROM cuentas WHERE activo='Si'");
+            $bancos = \DB::select("SELECT idb,nombre FROM bancos WHERE activo='si'");
+            $cuentasData = \DB::table('cuentas')->where('activo', 'Si')->pluck('nombreCuenta', 'idCuenta')->toArray();
+    
             return view('gastosOperativos')
                 ->with('gastos', $gastos)
                 ->with('bancos', $bancos)
-                ->with('cuentas', $cuentas);
+                ->with('cuentasData', $cuentasData);
+        }
+    }
+    
+    public function ind()
+    {
+        $sname = Session::get('sesionname');
+        $sidu = Session::get('sesionidu');
+        $stipo = Session::get('sesiontipo');
+    
+        if ($sname == '' or $sidu == '' or $stipo == '') {
+            Session::flash('error', 'Es necesario logearse antes de continuar');
+            return redirect()->route('login');
+        } else {
+            $gastos = GastosOperativos::all();
+            $bancos = \DB::select("SELECT idb,nombre FROM bancos WHERE activo='si'");
+            $cuentasData = \DB::table('cuentas')->where('activo', 'Si')->pluck('nombreCuenta', 'idCuenta')->toArray();
+    
+            return view('gastosOperativos2')
+                ->with('gastos', $gastos)
+                ->with('bancos', $bancos)
+                ->with('cuentasData', $cuentasData);
         }
     }
 

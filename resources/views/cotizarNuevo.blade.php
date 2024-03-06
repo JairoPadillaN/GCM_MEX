@@ -43,6 +43,11 @@
                     {{Form::text('descripcion',old('descripcion'),['class' => 'form-control rounded-0','readonly'])}}
                 </div>
             </div>
+            <div class="form-group row">
+                <div class="col-sm-3"></div>
+                <div class="col-sm-9" id="fechaActualizacion">
+                </div>
+            </div>
             <div class="" id="notaInternaYskuEquivalente">                
                 
             </div>            
@@ -397,10 +402,12 @@ $(".modificarMontoPartidaCotizacion").click(function (e) {
         document.getElementById("piezas").value = 0;
         document.getElementById("totalFin").value = 0;
         document.getElementById("precioV").value = 0;
+        $("#fechaActualizacion").empty();
         var tipoMoneda = $("#tipoMoneda").val();
         var cambioDolar = $("#cambioDolar").val();
         $("#modelo").load('{{url('modeloParte')}}' + '?r=' + Date.now() + '&idPartesVenta='  + this.options[this.selectedIndex].value);
         $("#descripcion").load('{{url('descripcionParte')}}' + '?r=' + Date.now() + '&idPartesVenta='  + this.options[this.selectedIndex].value);
+        $("#fechaActualizacion").load('{{url('fechaActualizacionParte')}}' + '?r=' + Date.now() + '&idPartesVenta='  + this.options[this.selectedIndex].value);
         $("#notaInternaYskuEquivalente").load('{{url('notaInternaYskuEquivalente')}}' + '?r=' + Date.now() + '&idPartesVenta='  + this.options[this.selectedIndex].value);
         $("#precioVenta").load('{{url('precioParte')}}' + '?r=' + Date.now() + '&idPartesVenta='  + this.options[this.selectedIndex].value + '&tipoMoneda=' + tipoMoneda + '&cambioDolar=' + cambioDolar,
             function() {

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\GastozExport; 
 use App\Exports\MultipleSheetsGastosOperativosExport;
+use App\Exports\MultipleSheetsGlobalVentasExport;
 use App\gastos;
 use App\facturas;
 use Session;
@@ -203,5 +204,12 @@ class reporteDeGastozController extends Controller
         //return now();
         return Excel::download(new MultipleSheetsGastosOperativosExport($fechaInicio, $fechaFinal, $empresa), 'reporte_' . $cadena . '.xlsx');
     } 
-
+     
+    public function reporteGVentas(Request $request)
+    {                
+        $fecha = $request->fecha;
+        $empresa = $request->empresa;
+		$cadena = $request->cadena;       
+        return Excel::download(new MultipleSheetsGlobalVentasExport($fecha, $empresa), 'reporteVentas_' . $cadena . '.xlsx');
+    } 
 }

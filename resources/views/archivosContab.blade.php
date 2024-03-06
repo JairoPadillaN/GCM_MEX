@@ -14,13 +14,17 @@
                 <h1>Archivos contables</h1>
             </div>
             <div class="panel-body" style="overflow-x: auto;">
-                <div class="row">
-                    <div class="col-md-3">
-                        <a href="{{ asset('altaContable') }}">
-                            <button type="button" class="btn btn-primary">Nuevo</button>
-                        </a>
+            @if (Session::get('sesiontipo') == 'Contador')
+                    
+                    @else
+                    <div class="row">
+                        <div class="col-md-3">
+                            <a href="{{ asset('altaContable') }}">
+                                <button type="button" class="btn btn-primary">Nuevo</button>
+                            </a>
+                        </div>
                     </div>
-                </div>
+                    @endif
                 <div class="row">
                 </div>
                 <br><br>
@@ -106,6 +110,24 @@
                 "order": [
                     [2, "desc"]
                 ],
+
+                language: {
+                info:           "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                infoEmpty:      "Mostrando 0 a 0 de 0 registros",
+                lengthMenu:     "Mostrar _MENU_ registros",
+                search:         "Buscar:",
+                loadingRecords: "Loading...",
+                processing:     "Procesando...",
+                zeroRecords:    "No hay registros aún",
+                paginate: {
+            // previous: "Anterior",
+            // next: "Siguiente"
+                    next: '→',
+                    previous: '←',
+                    first:'Inicio',
+                    last:'Ultimo'
+                },
+            },
             });
 
 
@@ -115,6 +137,10 @@
                 var url = '{{ route('reporteDetalle') }}' + '?' + form.serialize();
                 $('#modalArchivos').load(url);
             });
+
+            if ('{{ Session::get('sesiontipo') }}' === 'Contador') {
+            table.column(5).visible(false);
+        }
 
         });
     </script>

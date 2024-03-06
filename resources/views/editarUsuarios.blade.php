@@ -114,6 +114,7 @@ $(document).ready(function() {
                                     <option value="Vendedor">Vendedor</option>
                                     <option value="Compras">Compras</option>
                                     <option value="Almacen">Almacén</option>
+                                    <option value="Contador">Contador</option>
                                 </select>
                             </div>
                             <div class="sub-title">Empresa a la que dará seguimiento:</div>

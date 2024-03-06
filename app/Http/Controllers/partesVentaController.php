@@ -10,8 +10,8 @@ use App\partesVenta;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use App\Exports\PartesExport;
-use App\anexGrid;
 use App\costoEnvioDetalle;
+use App\anexGrid;
 use Session;
 use DB;
 
@@ -59,7 +59,7 @@ class partesVentaController extends Controller
         $parte ->precioCompraDol = $request->precioCompraDol;
         $parte ->precioVentaDol = $request->precioVentaDol;
         /* $parte ->fechaActualizacion = $request->fechaActualizacion; */
-        $parte->fechaActualizacion = \Carbon\Carbon::now()->setTimezone('America/Mexico_City');
+		$parte->fechaActualizacion = \Carbon\Carbon::now()->setTimezone('America/Mexico_City');
         $parte ->estatus = $request->estatus;
         $parte ->tipoProducto = $request->tipoProducto;
         $parte ->cantidad = $request->cantidad;
@@ -75,9 +75,13 @@ class partesVentaController extends Controller
         $parte ->ancho = $request->anchoInch;
         $parte ->alto = $request->altoInch;
         $parte ->peso = $request->pesoLb;
-        $parte->created_at = \Carbon\Carbon::now()->setTimezone('America/Mexico_City');
+		$parte->created_at = \Carbon\Carbon::now()->setTimezone('America/Mexico_City');
         $parte->updated_at = \Carbon\Carbon::now()->setTimezone('America/Mexico_City');
         $parte->save();
+
+        $parteSegundaDB = $parte->replicate();
+        $parteSegundaDB->setConnection('mysql_second')->save();
+
         $proceso='Alta de partes';
         $mensaje="Parte registrada correctamente";
         return view ('mensajePartesVenta')
@@ -345,7 +349,7 @@ class partesVentaController extends Controller
         $refaccionSel = tiporefacciones::where('idTipoRefacciones', '=', $consulta[0]->idTipoRefacciones)->get();
         $tipoRefaccion = $refaccionSel[0]->nombreTipoRefaccion;
         $refaccion = tiporefacciones::where('idTipoRefacciones', '!=', $consulta[0]->idTipoRefacciones)->get();
-        $refa = \DB::select("SELECT * FROM tiporefacciones WHERE idTipoRefacciones!=$idr AND idMarcaRefa = $idsel");        
+        $refa = \DB::select("SELECT * FROM tiporefacciones WHERE idTipoRefacciones!=$idr AND idMarcaRefa = $idsel");
         $consultaCE = \DB::table('costoEnvioDetalle')
         ->where('idPartesVenta', '=', $idPartesVenta)
         ->get();
@@ -454,7 +458,7 @@ class partesVentaController extends Controller
         $parte ->precioVentaPe = $request->precioVentaPe;
         $parte ->precioCompraDol = $request->precioCompraDol;
         $parte ->precioVentaDol = $request->precioVentaDol;
-        $parte ->fechaActualizacion = $request->fechaActualizacion;        
+        $parte ->fechaActualizacion = $request->fechaActualizacion;
         $parte ->estatus = $request->estatus;
         $parte ->tipoProducto = $request->tipoProducto;
         $parte ->cantidad = $request->cantidad;
@@ -490,9 +494,45 @@ class partesVentaController extends Controller
         $parte ->ancho = $request->anchoInch;
         $parte ->alto = $request->altoInch;
         $parte ->peso = $request->pesoLb;
-        $parte->updated_at = \Carbon\Carbon::now()->setTimezone('America/Mexico_City');
-
+		$parte->updated_at = \Carbon\Carbon::now()->setTimezone('America/Mexico_City');
         $parte->save();
+
+        $parteEnSegundaDB = partesVenta::on('mysql_second')->find($idPartesVenta);
+        if ($parteEnSegundaDB) {
+            partesVenta::on('mysql_second')->where('idPartesVenta', $idPartesVenta)->update([
+                "nombreRefaccion" => $request->nombreRefaccion,
+                "numeroParte" => $request->numeroParte,
+                "serie" => $request->serie,
+                "codigo" => $request->codigo,
+                "modelo" => $request->modelo,
+                "notaInterna" => $request->notaInterna,
+                "skuEquivalente" => $request->skuEquivalente,
+                "semanasEntrega" => $request->semanasEntrega,
+                "presentacion" => $request->presentacion,
+                "unidades" => $request->unidades,
+                "ubicacion" => $request->ubicacion,
+                "precioCompraPe" => $request->precioCompraPe,
+                "precioVentaPe" => $request->precioVentaPe,
+                "precioCompraDol" => $request->precioCompraDol,
+                "precioVentaDol" => $request->precioVentaDol,
+                "fechaActualizacion" => $request->fechaActualizacion,
+                "estatus" => $request->estatus,
+                "tipoProducto" => $request->tipoProducto,
+                "cantidad" => $request->cantidad,
+                "activo" => 'Si',
+                "idMarcaRefa" => $request->idMarcaRefa,
+                "idTipoRefacciones" => $request->idTipoRefacciones,
+                "parapaquete" => $request->parapaquete,
+                "codigoHts" => $request->codigoHTS,
+                "valorHts" => $request->valorHTS,
+                "codigoIgi" => $request->codigoIGI,
+                "valorIgi" => $request->valorIGI,
+                "largo" => $request->largoInch,
+                "ancho" => $request->anchoInch,
+                "alto" => $request->altoInch,
+                "peso" => $request->pesoLb,
+                ]);
+            }
 
         detallepaquetes::where('idPartesVenta', '=', $idPartesVenta)
         ->update([
@@ -505,8 +545,20 @@ class partesVentaController extends Controller
         'precioVentaPe' => $precioVentaPe,
         'precioVentaDol' => $precioVentaDol
         ]);
-     
 
+        $paquetesEnSegundaDB = detallepaquetes::on('mysql_second')->find($idPartesVenta);
+        if ($paquetesEnSegundaDB) {
+            detallepaquetes::on('mysql_second')->where('idPartesVenta', $idPartesVenta)->update([
+                'idMarcaRefa' => $idMarcaRefa,
+                'idTipoRefacciones' => $idTipoRefacciones,
+                'codigo' => $codigo,
+                'serie' => $serie,
+                'numeroParte' => $numeroParte,
+                'modelo' => $modelo,
+                'precioVentaPe' => $precioVentaPe,
+                'precioVentaDol' => $precioVentaDol
+            ]);
+        }
 
 
         $proceso='Modificación de partes';
@@ -520,6 +572,11 @@ class partesVentaController extends Controller
         $partes = \DB::UPDATE("update partesVenta
         set activo ='No' where idPartesVenta=$idPartesVenta");
 
+        $parteEnSegundaDB = partesVenta::on('mysql_second')->find($idPartesVenta);
+        if ($parteEnSegundaDB) {
+            partesVenta::on('mysql_second')->where('idPartesVenta', $idPartesVenta)->update(['activo' => 'No']);
+        }
+
         $proceso ="Eliminación de partes";
         $mensaje="La parte ha sido desactivada correctamente";
         return view('mensajePartesVenta')
@@ -530,6 +587,11 @@ class partesVentaController extends Controller
         $partes = \DB::UPDATE("update partesVenta
         set activo ='Si' where idPartesVenta=$idPartesVenta");
 
+        $parteEnSegundaDB = partesVenta::on('mysql_second')->find($idPartesVenta);
+        if ($parteEnSegundaDB) {
+            partesVenta::on('mysql_second')->where('idPartesVenta', $idPartesVenta)->update(['activo' => 'Si']);
+        }
+        
         $proceso ="Restauración de partes";
         $mensaje="La parte ha sido activada correctamente";
         return view('mensajePartesVenta')
@@ -589,4 +651,5 @@ class partesVentaController extends Controller
         return view('reporteCostosDeEnvio')
         ->with('consultaCED',$consulta);
     }
+
 }

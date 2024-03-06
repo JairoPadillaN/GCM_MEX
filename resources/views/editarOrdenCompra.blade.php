@@ -89,6 +89,7 @@ $(document).ready(function() {
                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                     SURJA {{Form::radio('nombreEmpresa','SURJA',true)}}
 									&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            CONTROL MOTION INC {{Form::radio('nombreEmpresa','CMIN')}}
                                    <br>
                                     Pedro Ocegueda J. {{Form::radio('nombreEmpresa','POJ')}}
                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -115,7 +116,7 @@ $(document).ready(function() {
                                     Pedro Ocegueda J. {{Form::radio('nombreEmpresa','POJ')}}
                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                     Yaneth Abilene G. A. {{Form::radio('nombreEmpresa','YAGA',true)}}
-							    
+							   
                                 @endif
                             </div>
                             <div class="row">

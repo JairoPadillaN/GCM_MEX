@@ -87,11 +87,11 @@
                                         <input type="hidden" value="0" id="Asubido">
                                     @else
                                         <input type="hidden" value="1" id="Asubido">
-                                        <a target="_blank" href="{{asset ('public/archivos/'.$cotizacionFoto->archivoCotizacion)}}">
+                                        <a target="_blank" href="{{asset ('archivos/'.$cotizacionFoto->archivoCotizacion)}}">
                                             @if(strpos($cotizacionFoto->archivoCotizacion,'pdf'))
                                                 <i class="fa fa-file-pdf-o fa-5x" aria-hidden="true" style="color: #750404;background-color: #fff;border-color: #4d42ff59;"></i>
                                             @else
-                                                <img src="{{asset ('public/archivos/'.$cotizacionFoto->archivoCotizacion)}}" height=80 width=80>
+                                                <img src="{{asset ('archivos/'.$cotizacionFoto->archivoCotizacion)}}" height=80 width=80>
                                             @endif
                                         </a>
                                     @endif

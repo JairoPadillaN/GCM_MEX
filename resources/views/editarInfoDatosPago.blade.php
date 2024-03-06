@@ -40,6 +40,10 @@
                             <hr> <!-- linea de division -->
 
                             <div class="sub-title" style="text-align:center">Monto Facturado</div>
+                            <div class="sub-title">Fecha de Factura:</div>
+                                        <div>
+                                             {{Form::date('fechafact',$datosPago->fechafactura,['class' => 'form-control'])}}
+                                        </div>
                             <div class="row">
                                 <div class="form-group col-md-4">
                                 <div class="sub-title">Tipo de cambio facturado:</div>

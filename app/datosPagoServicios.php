@@ -26,8 +26,9 @@ class datosPagoServicios extends Model
     'ivaFac',
     'subtotalFac',
     'difCambiaria',
-    'fechaDatosPago'
+    'fechaDatosPago',
+    'fechafactura',
     ];
     protected $dates = ['delete_at',
-    'fechaDatosPago'];
+    'fechaDatosPago', 'fechafactura'];
 }

@@ -566,7 +566,7 @@
                     @endif
                     <br>
                     {{$consultaOrden->usuario}}<br>
-                    procurement.int@gcmgdl.com<br>
+                    procurement@cmgroup-us.com<br>
                     <!-- ADMINISTRACION Y FINANZAS <br> -->
                     @if ($consultaOrden->formato == "CMG USA")
                         Laredo, Texas 1+ 956-717-3133<br>

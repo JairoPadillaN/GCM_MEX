@@ -1,8 +1,7 @@
 <table>
     <thead>
-        <tr>
-            <th colspan='3' style="font-size: 20px; text-align:center; color:black;">REPORTE ESTADO DE RESULTADOS
-                {{ $nombreEmpresa }}
+        <tr>      
+            <th colspan='3' style="font-size: 20px; text-align:center; color:black;">REPORTE ESTADO DE RESULTADOS {{$nombreEmpresa}}
             </th>
         </tr>
         <tr>
@@ -11,7 +10,7 @@
                 @php
                     date_default_timezone_set('America/Mexico_City');
                     echo date('d/m/Y h:i:s A');
-                @endphp|
+                @endphp
             </th>
         </tr>
         <tr>

@@ -93,7 +93,8 @@
 
 				<div class="login100-more text-center" style="background-color: #FFFFFF">
 
-					<img src="{!! asset('archivos/logo1a.png')!!}" style="margin-top:14% !important;  width:789px">
+					<img src="{!! asset('estiloslogin/images/logoiniciosesion.PNG')!!}" style="margin-top:14% !important;  width:789px">
+
 				</div>
 			</div>
 		</div>

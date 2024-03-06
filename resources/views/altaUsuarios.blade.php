@@ -80,6 +80,7 @@
                         <option value="Vendedor">Vendedor</option>
                         <option value="Compras">Compras</option>
                         <option value="Almacen">Almacén</option>
+                        <option value="Contador">Contador</option>
                     </select>
                 </div>
 

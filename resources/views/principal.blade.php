@@ -146,7 +146,7 @@ Website: http://www.webthemez.com/
                                         <a href="{!! asset('AltaUsuarios') !!}">Nuevo usuario</a>
                                     </li>
                                     <li>
-                                        <a href="{!! asset('ReporteUsuarios') !!}">Consultar de usuarios</a>
+                                        <a href="{!! asset('ReporteUsuarios') !!}">Consulta de usuarios</a>
                                     </li>
                                 </ul>
                             </li>
@@ -343,8 +343,8 @@ Website: http://www.webthemez.com/
                             <a href="{!! asset('archivosContab') !!}">Archivos</a>
 
                         </li>
-                        <li>
-                            <a href="{!! asset('archivosUnicos') !!}">Archivos Únicos /*Beta*/</a>
+						<li>
+                            <a href="{!! asset('archivosUnicos') !!}">Archivos Únicos</a>
                         </li>
                         <li>
                             <a href="{!! asset('reporteGastosOperativos') !!}">Estado de Resultados</a>
@@ -361,8 +361,11 @@ Website: http://www.webthemez.com/
                                 <li>
                                     <a href="{!! asset('altaFacturas') !!}">Nuevo Servicio</a>
                                 </li>
+                                <!--<li>
+                                    <a href="{!! asset('reporteFacturas') !!}">Consultar Servicios (old)</a>
+                                </li>-->
                                 <li>
-                                    <a href="{!! asset('reporteFacturas') !!}">Consultar Servicios</a>
+                                    <a href="{!! asset('reporteFacturacion') !!}">Consultar Servicios</a>
                                 </li>
                                 <li>
                                     <a href="{!! asset('reporteGastos') !!}">Consultar Gastos</a>
@@ -377,17 +380,20 @@ Website: http://www.webthemez.com/
                                 <li>
                                     <a href="{!! asset('reporteOrdenesCompra') !!}">Reporte de compras</a>
                                 </li>
-                                <li>
+                                <!--<li>
                                     <a href="{{ route('reporteUtilidadGeneral') }}">Reporte general de utilidad</a>
-                                </li>
+                                </li>-->
                                 <li>
                                     <a href="{!! asset('reporteCuentasContables') !!}">Reporte de cuentas contables</a>
                                 </li>
-                                <li>
+                                <!--<li>
                                     <a href="{!! asset('reporteventas') !!}">Reporte de ventas</a>
-                                </li>
-                                <li>
+                                </li>-->
+                                <!--<li>
                                     <a href="{!! asset('reportecomisiones') !!}">Reporte de comisiones</a>
+                                </li>-->
+                                <li>
+                                    <a href="{!! asset('reporteGlobalVentas') !!}">Reporte global de ventas</a>
                                 </li>
                             </ul>
                         </li>
@@ -510,7 +516,7 @@ Website: http://www.webthemez.com/
                 </li>
 
                 <li>
-                    <a href="#"><i class="fa fa-credit-card"></i>Catálogo de partes <span class="fa arrow"></span></a>
+                    <a href="#"><i class="fa fa-credit-card"></i>Catálogo de partes<span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
                         <li>
                             <a href="{!! asset('altaPartesVenta') !!}">Agregar parte</a>
@@ -525,6 +531,9 @@ Website: http://www.webthemez.com/
                             <a href="{!! asset('reporteSKUCotizacion') !!}">Reporte de SKU's en Cotizaciones</a>
                         </li>
                         <li>
+                            <a href="{!! asset('skuVendido') !!}">Reporte de SKU's vendidos por servicio</a>
+                        </li>
+						<li>
                             <a href="{!! asset('reporteTopVentas') !!}">Reporte Top de ventas</a>
                         </li>
                         <li>
@@ -626,6 +635,15 @@ Website: http://www.webthemez.com/
                     </ul>
                 </li>
 
+                <!-- Otros Ingresos -->
+                <li>
+                    <a href="#"><i class="fa fa-bar-chart fa-fw"></i>Ingresos <span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a href="{{ route('reporteOtrosing') }}">Otros Ingresos</a>
+                        </li>
+                    </ul>
+                </li>
 
                 <!-- Gastos Operativos -->
                 <li>
@@ -778,8 +796,11 @@ Website: http://www.webthemez.com/
                             <!--<li>
                                             <a href="{!! asset('altaFacturas') !!}">Nuevo Servicio</a>
                                         </li> -->
+                        <!--<li>
+                                    <a href="{!! asset('reporteFacturas') !!}">Consultar Servicios (old)</a>
+                                </li>-->
                         <li>
-                            <a href="{!! asset('reporteFacturas') !!}">Consultar Servicios</a>
+                            <a href="{!! asset('reporteFacturacion') !!}">Consultar Servicios</a>
                         </li>
                     </ul>
                 <li>
@@ -903,6 +924,9 @@ Website: http://www.webthemez.com/
                             <a href="{!! asset('reporteSKUCotizacion') !!}">Reporte de SKU's en Cotizaciones</a>
                         </li>
                         <li>
+                            <a href="{!! asset('skuVendido') !!}">Reporte de SKU's vendidos por servicio</a>
+                        </li>
+						<li>
                             <a href="{!! asset('reporteTopVentas') !!}">Reporte Top de ventas</a>
                         </li>
                         <li>
@@ -1077,8 +1101,11 @@ Website: http://www.webthemez.com/
                                     <li>
                                         <a href="{!! asset('altaFacturas') !!}">Nuevo Servicio</a>
                                     </li>
+                                    <!--<li>
+                                    <a href="{!! asset('reporteFacturas') !!}">Consultar Servicios (old)</a>
+                                    </li>-->
                                     <li>
-                                        <a href="{!! asset('reporteFacturas') !!}">Consultar Servicios</a>
+                                        <a href="{!! asset('reporteFacturacion') !!}">Consultar Servicios</a>
                                     </li>
                                 </ul>
                                 <!--<li>
@@ -1148,7 +1175,7 @@ Website: http://www.webthemez.com/
                                 <a href="{!! asset('AltaUsuarios') !!}">Nuevo usuario</a>
                             </li>
                             <li>
-                                <a href="{!! asset('ReporteUsuarios') !!}">Consultar de usuarios</a>
+                                <a href="{!! asset('ReporteUsuarios') !!}">Consulta de usuarios</a>
                             </li>
                         </ul>
                     </li>
@@ -1211,8 +1238,12 @@ Website: http://www.webthemez.com/
                                 <!--<li>
                                             <a href="{!! asset('altaFacturas') !!}">Nuevo Servicio</a>
                                         </li> -->
+                            <!--<li>
+                                    <a href="{!! asset('reporteFacturas') !!}">Consultar Servicios (old)</a>
+                            </li>-->
                             <li>
-                                <a href="{!! asset('reporteFacturas') !!}">Consultar Servicios</a>
+                                <a href="{!! asset('reporteFacturacion') !!}">Consultar Servicios</a>
+                            </li>
                         </ul>
                     <li>
 
@@ -1251,8 +1282,11 @@ Website: http://www.webthemez.com/
                                 <a href="{!! asset('reporteSKUCotizacion') !!}">Reporte de SKU's en Cotizaciones</a>
                             </li>
                             <li>
-                                <a href="{!! asset('reporteTopVentas') !!}">Reporte Top de ventas</a>
+                                <a href="{!! asset('skuVendido') !!}">Reporte de SKU's vendidos por servicio</a>
                             </li>
+							<li>
+								<a href="{!! asset('reporteTopVentas') !!}">Reporte Top de ventas</a>
+							</li>
                             <li>
                                 <a href="#"><i class="fa fa-cog"></i>Marcas Refacciones<span class="fa arrow"></span></a>
                                 <ul class="nav nav-second-level">
@@ -1395,7 +1429,7 @@ Website: http://www.webthemez.com/
                             </li>
                         </ul>
                     </li>
-                    @if (Session::get('sesionidu') == 20)
+
                     <li>
                         <a href="#"><i class="fa fa-folder fa-fw"></i>Archivos contables<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
@@ -1404,15 +1438,18 @@ Website: http://www.webthemez.com/
                             </li>                            
                         </ul>
                     </li>
-                    @endif
+                   
                     <li>
                         <a href="#"><i class="fa fa-list-alt fa-fw"></i>Servicios<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <li>
                                 <a href="#"><i class="fa fa-list-alt fa-fw"></i>Opciones de Servicios<span class="fa arrow"></span></a>
                                 <ul class="nav nav-second-level">
+                                    <!--<li>
+                                    <a href="{!! asset('reporteFacturas') !!}">Consultar Servicios (old)</a>
+                                    </li>-->
                                     <li>
-                                        <a href="{!! asset('reporteFacturas') !!}">Consultar Servicios</a>
+                                        <a href="{!! asset('reporteFacturacion') !!}">Consultar Servicios</a>
                                     </li>
                                 </ul>
                             </li>
@@ -1490,6 +1527,25 @@ Website: http://www.webthemez.com/
 
                 </ul>
                 @endif
+
+                @if (Session::get('sesiontipo') == 'Contador')
+                <ul class="nav" id="main-menu">
+               
+                    <li>
+                        <a href="#"><i class="fa fa-folder fa-fw"></i>Archivos contables<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li>
+                                <a href="{!! asset('archivosContab') !!}">Archivos</a>
+                            </li>
+                            <li>
+                                <a href="{!! asset('archivosUnicos') !!}">Archivos Únicos</a>
+                            </li>                            
+                        </ul>
+                    </li>            
+
+                </ul>
+                @endif
+  
 
             </div>
         </div>

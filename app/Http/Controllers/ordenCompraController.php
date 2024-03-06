@@ -1127,36 +1127,7 @@ class ordenCompraController extends Controller{
         ->with('archivoPaq4',$archivoPaq4);
     }
 
-    public function reporteProductosEnOC(Request $request){
-        $sname = Session::get('sesionname');
-        $sidu = Session::get('sesionidu');
-        $spat = Session::get('sesionpaterno');
-        $smat = Session::get('sesionmaterno');
-        $stipo = Session::get('sesiontipo');
-        if($sname == '' or $sidu =='' or $stipo=='' or $spat=='' or $smat==''){
-            Session::flash('error', 'Es necesario logearse antes de continuar');
-            return redirect()->route('login');
-        }
-        else{
-            $registros = \DB::SELECT("SELECT oc.fechaOrden,oc.codigoOrden,oc.nombreEmpresa AS Empresa,pro.razonSocialProv,
-            IF(fact.idservicios IS NULL,'-',fact.idservicios) AS servicio
-            ,poc.codigo,poc.nombreRefaccion,
-            oc.moneda,poc.cantidadOrden, poc.precioOrden AS `precio unitario USDMXN`,
-            IF(poc.moneda ='USD',oc.cambioDolar * poc.precioOrden, poc.precioOrden) AS 'precio unitario MXN',
-            poc.notasProducto
-            FROM productosOrdenCompra AS poc
-            INNER JOIN ordenCompra AS oc ON oc.idorden = poc.idorden
-            INNER JOIN proveedores AS pro ON pro.idProveedor = oc.idProveedor
-            LEFT JOIN facturas AS fact ON fact.idfactura = poc.idFactura
-            ORDER BY fechaOrden DESC");
-
-            return view('reporteProductosEnOC')
-            ->with('registros', $registros);
-
-        }
-    }
-
-    /*public function consultaProductosOC(){
+    public function consultaProductosOC(){
         $consultaProducto= \DB::select("SELECT
         (SELECT oc.codigoOrden FROM ordenCompra AS oc WHERE oc.idOrden = (SELECT ne.idOrden FROM notasEntrada AS ne WHERE ne.idNotaEntrada = dne.idNotaEntrada)) AS ordenCompra,
         (SELECT DATE_FORMAT(oc.fechaOrden,'%d/%m/%Y') FROM ordenCompra AS oc WHERE oc.idOrden = (SELECT ne.idOrden FROM notasEntrada AS ne WHERE ne.idNotaEntrada = dne.idNotaEntrada)) AS fechaOrden,
@@ -1190,7 +1161,7 @@ class ordenCompraController extends Controller{
         ORDER BY dne.idDetalleNotasEntrada DESC");
         
         return response()->json($consultaProducto, 200);
-    }*/
+    }
 
     // Funcion para crear el registro en la tabla de asignaciones 
     // siempre y cuando el producto agregado en la orde tenfa un idFactura
@@ -1347,7 +1318,36 @@ class ordenCompraController extends Controller{
         return $sumaTotales;
     }
 
-    public function anexgrid_get_ProductosOC(){
+    public function reporteProductosEnOC(Request $request){
+        $sname = Session::get('sesionname');
+        $sidu = Session::get('sesionidu');
+        $spat = Session::get('sesionpaterno');
+        $smat = Session::get('sesionmaterno');
+        $stipo = Session::get('sesiontipo');
+        if($sname == '' or $sidu =='' or $stipo=='' or $spat=='' or $smat==''){
+            Session::flash('error', 'Es necesario logearse antes de continuar');
+            return redirect()->route('login');
+        }
+        else{
+            $registros = \DB::SELECT("SELECT oc.fechaOrden,oc.codigoOrden,oc.nombreEmpresa AS Empresa,pro.razonSocialProv,
+            IF(fact.idservicios IS NULL,'-',fact.idservicios) AS servicio
+            ,poc.codigo,poc.nombreRefaccion,
+            oc.moneda,poc.cantidadOrden, poc.precioOrden AS `precio unitario USDMXN`,
+            IF(poc.moneda ='USD',oc.cambioDolar * poc.precioOrden, poc.precioOrden) AS 'precio unitario MXN',
+            poc.notasProducto
+            FROM productosOrdenCompra AS poc
+            INNER JOIN ordenCompra AS oc ON oc.idorden = poc.idorden
+            INNER JOIN proveedores AS pro ON pro.idProveedor = oc.idProveedor
+            LEFT JOIN facturas AS fact ON fact.idfactura = poc.idFactura
+            ORDER BY fechaOrden DESC");
+
+            return view('reporteProductosEnOC')
+            ->with('registros', $registros);
+
+        }
+    }
+    
+    /*public function anexgrid_get_ProductosOC(){
         $anexGrid = new anexGrid();
         $order;
         $anexGrid->columna_orden != '' ? $order= $anexGrid->columna_orden : $order = 'DESC';
@@ -1472,7 +1472,7 @@ class ordenCompraController extends Controller{
         );
 
         return response()->json($data, 200);
-    }
+    }*/
 
     public function reporteProductosEnNotaEntrada(){
         $sname = Session::get('sesionname');
@@ -1554,8 +1554,7 @@ class ordenCompraController extends Controller{
         ->with("cuantos", $cuantos)
         ->with("totalMXN", $totalMXN)
         ->with("consulta", $consulta);
-    }
-    public function editarProductoOrden(Request $request)
+    }public function editarProductoOrden(Request $request)
     {
         $idProducto = $request->idProducto;
         $idOrden = $request->idOrden;
@@ -1607,22 +1606,22 @@ class ordenCompraController extends Controller{
 
         // dd($consulta);
 
-        if($idPartesVenta){
-            if($idFactura){
-                $opcionCombo=\DB::select("SELECT f.idFactura, CONCAT(f.idServicios,'-',c.razonSocial,'-',s.sucursal) AS paracombo
-                FROM productosOrdenCompra AS poc
-                INNER JOIN facturas AS f ON f.idFactura = poc.idFactura
-                INNER JOIN clientes AS c ON c.idc =f.idc 
-                INNER JOIN sucursales AS s ON s.idSucursal = f.idSucursal
-                WHERE poc.idPartesVenta = $idPartesVenta AND poc.idOrden = 168 AND poc.idFactura = $idFactura");
-        }
-        
-        $consultaOpcionesCombo=\DB::select("SELECT f.idFactura, CONCAT(f.idServicios,'-',c.razonSocial,'-',s.sucursal) AS paracombo
-        FROM facturas AS f
-        INNER JOIN clientes AS c ON c.idc =f.idc
-        INNER JOIN sucursales AS s ON s.idSucursal = f.idSucursal
-        ORDER BY f.idfactura DESC"); 
-        }
+            if($idPartesVenta){
+                if($idFactura){
+                    $opcionCombo=\DB::select("SELECT f.idFactura, CONCAT(f.idServicios,'-',c.razonSocial,'-',s.sucursal) AS paracombo
+                    FROM productosOrdenCompra AS poc
+                    INNER JOIN facturas AS f ON f.idFactura = poc.idFactura
+                    INNER JOIN clientes AS c ON c.idc =f.idc 
+                    INNER JOIN sucursales AS s ON s.idSucursal = f.idSucursal
+                    WHERE poc.idPartesVenta = $idPartesVenta AND poc.idOrden = 168 AND poc.idFactura = $idFactura");
+            }
+            
+            $consultaOpcionesCombo=\DB::select("SELECT f.idFactura, CONCAT(f.idServicios,'-',c.razonSocial,'-',s.sucursal) AS paracombo
+            FROM facturas AS f
+            INNER JOIN clientes AS c ON c.idc =f.idc
+            INNER JOIN sucursales AS s ON s.idSucursal = f.idSucursal
+            ORDER BY f.idfactura DESC"); 
+            }
             
             // dd($consulta);
             // dd($opcionCombo);

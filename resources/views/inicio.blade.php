@@ -33,7 +33,7 @@ $(document).ready(function() {
             <!-- <div class="tab-content" id="pills-tabContent"> -->
                 <!-- <div class="tab-pane fade" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab"> -->
                 <br><br><br>
-                    @if(Session::get('sesiontipo')=="Compras")
+                    @if(Session::get('sesiontipo')=="Compras" || Session::get('sesiontipo')=="Contador")
                         <img src="{{asset ('archivos/CYMGROUPFONDO.png')}}" alt="" width="100%" height="100%" style="margin-top:-60px">
                     @else
                         <div id="reporteSeguimiento">

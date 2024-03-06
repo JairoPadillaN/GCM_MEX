@@ -56,8 +56,7 @@ $(document).ready(function() {
                             GCM <input id="empresaCuenta" type="radio" name="empresaCuenta" value="gcm" checked="true"/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             C&M <input id="empresaCuenta" type="radio" name="empresaCuenta" value="cym" /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             SURJA <input id="empresaCuenta" type="radio" name="empresaCuenta" value="surja"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							CONTROL MOTION INC <input id="empresaCuenta" type="radio" name="empresaCuenta" value="cmin"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            PEDRO OCEGUEDA <input id="empresaCuenta" type="radio" name="empresaCuenta" value="pedro"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							PEDRO OCEGUEDA <input id="empresaCuenta" type="radio" name="empresaCuenta" value="pedro"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             YANETH ABILENE <input id="empresaCuenta" type="radio" name="empresaCuenta" value="yaneth"/>
                             @endif
 
@@ -65,8 +64,7 @@ $(document).ready(function() {
                             GCM <input id="empresaCuenta" type="radio" name="empresaCuenta" value="gcm" /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             C&M <input id="empresaCuenta" type="radio" name="empresaCuenta" value="cym" checked="true"/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             SURJA <input id="empresaCuenta" type="radio" name="empresaCuenta" value="surja"/>
-							CONTROL MOTION INC <input id="empresaCuenta" type="radio" name="empresaCuenta" value="cmin"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            PEDRO OCEGUEDA <input id="empresaCuenta" type="radio" name="empresaCuenta" value="pedro"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							 PEDRO OCEGUEDA <input id="empresaCuenta" type="radio" name="empresaCuenta" value="pedro"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             YANETH ABILENE <input id="empresaCuenta" type="radio" name="empresaCuenta" value="yaga"/>
                             @endif
 
@@ -74,33 +72,23 @@ $(document).ready(function() {
                             GCM <input id="empresaCuenta" type="radio" name="empresaCuenta" value="gcm" /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             C&M <input id="empresaCuenta" type="radio" name="empresaCuenta" value="cym" /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             SURJA <input id="empresaCuenta" type="radio" name="empresaCuenta" value="surja" checked="true"/>
-							CONTROL MOTION INC <input id="empresaCuenta" type="radio" name="empresaCuenta" value="cmin"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            PEDRO OCEGUEDA <input id="empresaCuenta" type="radio" name="empresaCuenta" value="pedro"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							PEDRO OCEGUEDA <input id="empresaCuenta" type="radio" name="empresaCuenta" value="pedro"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             YANETH ABILENE <input id="empresaCuenta" type="radio" name="empresaCuenta" value="yaga"/>
                             @endif
 
-                            @if($consulta->empresaCuenta == 'cmin')
-                            GCM <input id="empresaCuenta" type="radio" name="empresaCuenta" value="gcm" /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            C&M <input id="empresaCuenta" type="radio" name="empresaCuenta" value="cym" /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            SURJA <input id="empresaCuenta" type="radio" name="empresaCuenta" value="surja" />
-							CONTROL MOTION INC <input id="empresaCuenta" type="radio" name="empresaCuenta" value="cmin" checked="true"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            PEDRO OCEGUEDA <input id="empresaCuenta" type="radio" name="empresaCuenta" value="poj"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            YANETH ABILENE <input id="empresaCuenta" type="radio" name="empresaCuenta" value="yaneth"/>
-                            @endif
+                            
 							 @if($consulta->empresaCuenta == 'poj')
                             GCM <input id="empresaCuenta" type="radio" name="empresaCuenta" value="gcm" /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             C&M <input id="empresaCuenta" type="radio" name="empresaCuenta" value="cym" /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             SURJA <input id="empresaCuenta" type="radio" name="empresaCuenta" value="surja"/>
-							CONTROL MOTION INC <input id="empresaCuenta" type="radio" name="empresaCuenta" value="cmin"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            PEDRO OCEGUEDA <input id="empresaCuenta" type="radio" name="empresaCuenta" value="pedro" checked="true"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							PEDRO OCEGUEDA <input id="empresaCuenta" type="radio" name="empresaCuenta" value="pedro" checked="true"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             YANETH ABILENE <input id="empresaCuenta" type="radio" name="empresaCuenta" value="yaneth"/>
                             @endif
 							 @if($consulta->empresaCuenta == 'yaga')
                             GCM <input id="empresaCuenta" type="radio" name="empresaCuenta" value="gcm" /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             C&M <input id="empresaCuenta" type="radio" name="empresaCuenta" value="cym" /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             SURJA <input id="empresaCuenta" type="radio" name="empresaCuenta" value="surja"/>
-							CONTROL MOTION INC <input id="empresaCuenta" type="radio" name="empresaCuenta" value="cmin"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            PEDRO OCEGUEDA <input id="empresaCuenta" type="radio" name="empresaCuenta" value="pedro"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							PEDRO OCEGUEDA <input id="empresaCuenta" type="radio" name="empresaCuenta" value="pedro"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             YANETH ABILENE <input id="empresaCuenta" type="radio" name="empresaCuenta" value="yaneth" checked="true"/>
                             @endif
 
