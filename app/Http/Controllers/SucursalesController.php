@@ -948,4 +948,445 @@ class SucursalesController extends Controller{
 
   }
 
+  /* Inicia funciones nuevas para Sucursales */
+
+  public function reporte_Sucursales(Request $request){
+    $sname = Session::get('sesionname');
+    $sidu = Session::get('sesionidu');
+    $stipo = Session::get('sesiontipo');
+
+    if($sname == '' or $sidu =='' or $stipo=='')
+    {
+        Session::flash('error', 'Es necesario logearse antes de continuar');
+        return redirect()->route('login');
+    }
+    else
+    {
+
+    $consulta = \DB::select("SELECT s.idSucursal,s.sucursal,s.activo, c.razonSocial AS cli FROM sucursales AS s
+    INNER JOIN clientes AS c ON c.idc= s.idc");
+
+    $cliente = clientes::orderby('razonSocial','asc')->get();
+
+    return view ('reporte_Sucursales')
+    ->with('cliente',$cliente)
+    ->with('consulta',$consulta);
+    }
+
+  }
+
+  public function alta_Sucursales(){
+    $sname = Session::get('sesionname');
+    $sidu = Session::get('sesionidu');
+    $stipo = Session::get('sesiontipo');
+
+    if($sname == '' or $sidu =='' or $stipo=='')
+    {
+        Session::flash('error', 'Es necesario logearse antes de continuar');
+        return redirect()->route('login');
+    }
+    else
+    {   
+        $cuantosHay=0;
+        $cliente = clientes::orderby('razonSocial','asc')->get();
+        $consulta= sucursales::orderby('idSucursal','desc')
+           ->take(1)
+           ->get();
+        return view ('alta_Sucursales')
+        ->with('cuantosHay',$cuantosHay)
+        ->with('cliente',$cliente);
+    }
+}
+
+  public function eliminar_Sucursales ($idSucursal){/*Rerecibe este parametro y lo guarda en esa variable*/
+  $suc = \DB::UPDATE("update sucursales set activo ='No' where idSucursal=$idSucursal");
+
+
+    return redirect()->route('reporte_Sucursales')->with('success','La sucursal fue desactivada correctamente');
+  }
+
+  public function restaurar_Sucursales ($idSucursal){ //restarura el valos de NO a SI en el campo activo
+  $suc = \DB::UPDATE("update sucursales
+  set activo ='Si' where idSucursal=$idSucursal");
+
+    return redirect()->route('reporte_Sucursales')->with('success','La sucursal fue restaurada correctamente');
+  }
+
+  public function Guardar_Sucursales(Request $request){
+
+    $sucursal = $request-> sucursal;
+    $idc = $request-> idc;
+    $calle = $request-> calle;
+    $num = $request-> num;
+    $colonia = $request-> colonia;
+    $gcmid = $request -> gcmid;
+    $tipoSucursal=$request-> tipoSucursal;
+    
+    $arrayServicios = $request-> servicios;
+    $cadenaServicios = implode(', ',$arrayServicios);
+    
+    $arrayMarcas = $request-> marcas;
+    $cadenaMarcas = implode(', ',$arrayMarcas);
+    
+
+    $existencia = \DB::select("SELECT gcmid FROM sucursales WHERE gcmid=?",[$gcmid]);
+    $cuantosHay = count($existencia); 
+    
+    if($cuantosHay < 1){
+        $contactoVentas=$request-> contactoVentas;
+        $correoVentas=$request-> correoVentas;
+        $telVentas=$request-> telVentas;
+        $contactoGerente=$request-> contactoGerente;
+        $correoGerente=$request-> correoGerente;
+        $telGerente=$request-> telGerente;
+    
+        $contactoCompras=$request-> contactoCompras;
+        $correoCompras=$request-> correoCompras;
+        $telCompras=$request-> telCompras;
+    
+        $nombreCuentasPP=$request-> nombreCuentasPP;
+        $correoCuentasPP=$request-> correoCuentasPP;
+        $telefonoCuentasPP=$request-> telefonoCuentasPP;
+        $extencionCuentasPP=$request-> extencionCuentasPP;
+    
+        $nombreCuentasPC=$request-> nombreCuentasPC;
+        $correoCuentasPC=$request-> correoCuentasPC;
+        $telefonoCuentasPC=$request-> telefonoCuentasPC;
+        $extencionCuentasPC=$request-> extencionCuentasPC;
+    
+        $contactoPlanta=$request-> contactoPlanta;
+        $correoPlanta=$request-> correoPlanta;
+        $telPlanta=$request-> telPlanta;
+        $extenPlanta=$request-> extenPlanta;
+    
+        $contactoAlmacen=$request-> contactoAlmacen;
+        $correoAlmacen=$request-> correoAlmacen;
+        $telAlmacen=$request-> telAlmacen;
+        $extenAlmacen=$request-> extenAlmacen;
+    
+        $this->validate ($request,[
+        'sucursal'=>['required'],
+        'idc'=>['required'],
+        'calle'=>['required'],
+        'num'=>['required'],
+        'colonia'=>['required'],
+        'gcmid'=>['required'],
+        'tipoSucursal'=>['required']
+        ]);
+    
+        $suc= new sucursales;
+        $suc-> idSucursal=$request->idSucursal;
+        $suc-> sucursal=$request->sucursal;
+        $suc-> idc = $request-> idc;
+        $suc-> calle=$request->calle;
+        $suc-> num=$request->num;
+        $suc-> colonia=$request->colonia;
+        $suc-> tipoSucursal=$request->tipoSucursal;
+        $suc-> gcmid=$request->gcmid;
+        $suc-> giro=$request->giro;
+        $suc-> zonaGeografica=$request->zonaGeografica;
+        $suc-> servicios=$cadenaServicios;
+        $suc-> marcas=$cadenaMarcas;
+    
+        $suc-> contactoVentas=$request->contactoVentas;
+        $suc-> correoVentas=$request->correoVentas;
+        $suc-> telVentas=$request->telVentas;
+        $suc-> extenVentas=$request->extenVentas;
+        $suc-> contactoGerente=$request->contactoGerente;
+        $suc-> correoGerente=$request->correoGerente;
+        $suc-> telGerente=$request->telGerente;
+        $suc-> extenGerente=$request->extenGerente;
+        $suc-> contactoCompras=$request->contactoCompras;
+        $suc-> correoCompras=$request->correoCompras;
+        $suc-> telCompras=$request->telCompras;
+        $suc-> extenCompras=$request->extenCompras;
+    
+        $suc-> contactoPlanta=$request->contactoPlanta;
+        $suc-> correoPlanta=$request->correoPlanta;
+        $suc-> telPlanta=$request->telPlanta;
+        $suc-> extenPlanta=$request->extenPlanta;
+    
+        $suc-> contactoAlmacen=$request->contactoAlmacen;
+        $suc-> correoAlmacen=$request->correoAlmacen;
+        $suc-> telAlmacen=$request->telAlmacen;
+        $suc-> extenAlmacen=$request->extenAlmacen;
+    
+        $suc-> nombreCuentasPP=$request->nombreCuentasPP;
+        $suc-> telefonoCuentasPP=$request->telefonoCuentasPP;
+        $suc-> correoCuentasPP=$request->correoCuentasPP;
+        $suc-> extencionCuentasPP=$request->extencionCuentasPP;
+    
+        $suc-> nombreCuentasPC=$request->nombreCuentasPC;
+        $suc-> telefonoCuentaspC=$request->telefonoCuentasPC;
+        $suc-> correoCuentasPC=$request->correoCuentasPC;
+        $suc-> extencionCuentasPC=$request->extencionCuentasPC;
+    
+        $suc->save();
+    
+
+        return redirect()
+        ->route('reporte_Sucursales')
+        ->with('cuantosHay',$cuantosHay)
+        ->with('success','La sucursal ha sido creada exitosamente'); 
+    
+    }else{
+        $cliente = clientes::orderby('razonSocial','asc')->get();
+        $consulta= sucursales::orderby('idSucursal','desc')
+        ->take(1)
+        ->get();
+        return view ('alta_Sucursales')
+        ->with('cuantosHay',$cuantosHay)
+        ->with('gcmid',$gcmid)
+        ->with('cliente',$cliente);
+    }
+  }
+
+  public function modificar_Sucursales($idSucursal){
+    $stipo = Session::get('sesiontipo');
+    $cuantosHay=0;
+    //$consulta = \DB::select("SELECT * FROM sucursales where idSucursal=$idSucursal");
+    $consultaClientes = sucursales::Where ('idSucursal','=',$idSucursal)->get();
+    $clienteSel= clientes::where('idc',"=",$consultaClientes[0]->idc)->get();
+    $nomcli =$clienteSel[0]->razonSocial;
+    $cliente = clientes::where ('idc','!=',$consultaClientes[0]->idc)->get();
+
+    $consulta = sucursales::Where ('idSucursal','=',$idSucursal)->get();
+    
+    $consultaCheckServicios = \DB::select("SELECT s.servicios FROM sucursales AS s WHERE idSucursal=$idSucursal ");
+    $cadenaCheckServicios= $consultaCheckServicios[0]->servicios;
+    $arrayCheckServicios=explode(', ',$cadenaCheckServicios);
+
+    $consultaCheckMarcas = \DB::select("SELECT s.marcas FROM sucursales AS s WHERE idSucursal=$idSucursal ");
+    $cadenaCheckMarcas= $consultaCheckMarcas[0]->marcas;
+    $arrayCheckMarcas=explode(', ',$cadenaCheckMarcas);
+
+    $contactos = contactosucursales::Where ('idSucursal','=',$idSucursal)->get();
+    $cuantos = count($contactos);
+    $seguimiento = \DB::select("SELECT sa.idSegActividad,sa.folio,  DATE_FORMAT(fechaCreacion,'%d %b %Y') AS fechaCreacionFormato, 
+            sa.asunto,u.idu, u.nombreUsuario, u.aPaterno, u.aMaterno, u.tipo, DATE_FORMAT(fechaInicio,'%d %b %Y') AS fechaInicioFormato,
+            DATE_FORMAT(fechaTermino,'%d %b %Y') AS fechaTerminoFormato,nombreActividad,
+            sa.importanciaSeguimiento, sa.activo, ar.nombreArea,CONCAT(c.razonSocial,' / ',s.sucursal) AS clienteSucursal
+            FROM seguimientoactividades AS sa
+            INNER JOIN usuarios AS u ON sa.idu = u.idu
+            INNER JOIN areas AS ar ON sa.idArea = ar.idArea
+            INNER JOIN sucursales AS s ON s.idSucursal= sa.idSucursal
+            INNER JOIN clientes AS c ON c.idc= sa.idc
+            INNER JOIN actividades AS act ON act.idActividad= sa.idActividad
+            WHERE s.idSucursal=?
+            ORDER BY idSegActividad DESC",[$idSucursal]);
+    $cuantosSegui=count($seguimiento);
+
+        $usuarioSel= usuarios::where('idu',"=",$consulta[0]->idu)->get();
+        $cuantosUsuarios = count($usuarioSel);
+
+        if($cuantosUsuarios != 0){
+          $nomus = $usuarioSel[0]->nombreUsuario;
+          $aPat = $usuarioSel[0]->aPaterno;
+          $aMat = $usuarioSel[0]->aMaterno;
+          $idUsu= $usuarioSel[0]->idu;
+          $consultaUsu = \DB::select("SELECT idu, CONCAT(nombreUsuario,' ', aPaterno,' ', aMaterno) AS usuario, tipo
+                                      FROM usuarios
+                                      WHERE tipo = 'Vendedor'
+                                      ORDER BY nombreUsuario ASC");
+        }else{
+          $nomus = 0;
+          $aPat = 0;
+          $aMat = 0;
+          $idUsu= 0;
+          $consultaUsu = \DB::select("SELECT idu, CONCAT(nombreUsuario,' ', aPaterno,' ', aMaterno) AS usuario, tipo
+                                      FROM usuarios
+                                      WHERE tipo = 'Vendedor'
+                                      ORDER BY nombreUsuario ASC");
+        }
+        $usuarios = usuarios::where ('idu','!=',$consulta[0]->idu)->get();
+
+        
+
+    
+    
+    return view('editar_Sucursales')
+
+    ->with('usuarios',$usuarios)
+    ->with('idusel',$consulta[0]->idu)
+    ->with('cuantosUsuarios',$cuantosUsuarios)
+    ->with('consultaUsu',$consultaUsu)
+    ->with('idUsu',$idUsu)
+    ->with('nomus',$nomus)
+    ->with('aPat',$aPat)
+    ->with('aMat',$aMat)
+
+    ->with('stipo',$stipo)
+    ->with('cuantosSegui',$cuantosSegui)
+    ->with('seguimiento',$seguimiento)
+    ->with('cuantosHay',$cuantosHay)
+    ->with('cliente',$cliente)
+    ->with('idclientesel',$consultaClientes[0]->idc)
+    ->with('nomcli',$nomcli)
+    ->with('clienteSel',$clienteSel[0])
+    ->with('arrayCheckServicios',$arrayCheckServicios)
+    ->with('arrayCheckMarcas',$arrayCheckMarcas)
+    ->with('consulta',$consulta[0])
+    ->with('contactos',$contactos)
+    ->with('cuantos',$cuantos);
+  }  
+
+  public function editar_Sucursales(Request $request){
+    $idSucursal=$request-> idSucursal;
+    $sucursal=$request-> sucursal;
+    $idc = $request-> idc;
+    $idu = $request-> idu;
+    $calle = $request-> calle;
+    $num = $request-> num;
+    $colonia = $request-> colonia;
+    $gcmid = $request-> gcmid;
+    $tipoSucursal=$request-> tipoSucursal;
+
+    $contactoVentas=$request->contactoVentas;
+    $correoVentas=$request->correoVentas;
+    $telVentas=$request->telVentas;
+    $extenVentas=$request->extenVentas;
+
+    $contactoGerente=$request->contactoGerente;
+    $correoGerente=$request->correoGerente;
+    $telGerente=$request->telGerente;
+    $extenGerente=$request->extenGerente;
+
+    $contactoCompras=$request->contactoCompras;
+    $correoCompras=$request->correoCompras;
+    $telCompras=$request->telCompras;
+    $extenCompras=$request->extenCompras;
+
+    $nombreCuentasPP=$request->nombreCuentasPP;
+    $telefonoCuentasPP=$request->telefonoCuentasPP;
+    $correoCuentasPP=$request->correoCuentasPP;
+    $extencionCuentasPP=$request->extencionCuentasPP;
+
+    $nombreCuentasPC=$request->nombreCuentasPC;
+    $telefonoCuentasPC=$request->telefonoCuentasPC;
+    $correoCuentasPC=$request->correoCuentasPC;
+    $extencionCuentasPC=$request->extencionCuentasPC;
+
+    $arrayServicios = $request-> servicios;
+    $cadenaServicios = implode(', ',$arrayServicios);
+    
+    $arrayMarcas = $request-> marcas;
+    $cadenaMarcas = implode(', ',$arrayMarcas);
+
+    $this->validate ($request,[
+    'calle'=>['required'],
+    'idc'=>['required'],
+    'num'=>['required'],
+    'sucursal'=>['required'],
+    'colonia'=>['required'],
+    'gcmid'=>['required']
+    ]);
+
+    $suc = sucursales::find($idSucursal);
+    $suc->idSucursal = $request-> idSucursal;
+    $suc->sucursal=$request->sucursal;
+    $suc->idc = $request-> idc;
+    $suc->idu = $request-> idu;
+    $suc->calle=$request->calle;
+    $suc->num=$request->num;
+    $suc->colonia=$request->colonia;
+    $suc->gcmid=$request->gcmid;
+    $suc-> zonaGeografica=$request->zonaGeografica;
+    $suc->tipoSucursal=$request->tipoSucursal;
+    
+    $suc-> giro=$request->giro;
+    $suc-> servicios=$cadenaServicios;
+    $suc-> marcas=$cadenaMarcas;
+
+    $suc->contactoVentas=$request->contactoVentas;
+    $suc->correoVentas=$request->correoVentas;
+    $suc->telVentas=$request->telVentas;
+    $suc->extenVentas=$request->extenVentas;
+
+    $suc->contactoGerente=$request->contactoGerente;
+    $suc->correoGerente=$request->correoGerente;
+    $suc->telGerente=$request->telGerente;
+    $suc->extenGerente=$request->extenGerente;
+
+    $suc->contactoCompras=$request->contactoCompras;
+    $suc->correoCompras=$request->correoCompras;
+    $suc->telCompras=$request->telCompras;
+    $suc->extenCompras=$request->extenCompras;
+
+    $suc->contactoPlanta=$request->contactoPlanta;
+    $suc->correoPlanta=$request->correoPlanta;
+    $suc->telPlanta=$request->telPlanta;
+    $suc->extenPlanta=$request->extenPlanta;
+
+    $suc->contactoAlmacen=$request->contactoAlmacen;
+    $suc->correoAlmacen=$request->correoAlmacen;
+    $suc->telAlmacen=$request->telAlmacen;
+    $suc->extenAlmacen=$request->extenAlmacen;
+
+    $suc->nombreCuentasPP=$request->nombreCuentasPP;
+    $suc->telefonoCuentasPP=$request->telefonoCuentasPP;
+    $suc->correoCuentasPP=$request->correoCuentasPP;
+    $suc->extencionCuentasPP=$request->extencionCuentasPP;
+
+    $suc->nombreCuentasPC=$request->nombreCuentasPC;
+    $suc->telefonoCuentasPC=$request->telefonoCuentasPC;
+    $suc->correoCuentasPC=$request->correoCuentasPC;
+    $suc->extencionCuentasPC=$request->extencionCuentasPC;
+
+    $suc->save();
+
+
+    return redirect()->route('reporte_Sucursales')->with('success','La sucursal '.$suc->sucursal.' ha sido editada correctamente');
+
+  }
+
+  public function contacto_Suc (Request $request){ 
+    $idc = $request->idc;
+    $idSucursal = $request->idSucursal;
+    $puesto = $request->puesto;
+    $nombreCont = $request->nombreCont;
+    $correoCont = $request->correoCont;
+    $telefonoCont = $request->telefonoCont;
+    $extension = $request->extension;
+    $whatsapp = $request->whatsapp;
+    $contactoAdicional = $request->contactoAdicional;
+
+    $contactos=\DB::select("SELECT COUNT(*) AS cuantos
+        FROM contactosucursales
+        WHERE idSucursal= $idSucursal");
+    $cuantos = $contactos[0]->cuantos; 
+    $cont = new contactosucursales;
+    $cont-> idSucursal = $request-> idSucursal;
+    $cont-> idc = $request-> idc;
+    $cont-> puesto = $request-> puesto;
+    $cont-> nombreCont = $request-> nombreCont;
+    $cont-> correoCont = $request-> correoCont;
+    $cont-> telefonoCont = $request-> telefonoCont;
+    $cont-> extension = $request-> extension;
+    $cont-> whatsapp = $request-> whatsapp;
+    $cont-> contactoAdicional = $request-> contactoAdicional;
+    $cont->save();
+
+    $contactos = contactosucursales::Where ('idSucursal','=',$idSucursal)->get();
+      
+      return view('detalle_Contactos')
+      ->with('contactos',$contactos)
+      ->with('cuantos',$cuantos);
+  }
+
+  
+  public function borrar_Cont(Request $request ){  
+    
+    $contBorrar = $request->idContactoSuc; 
+    $contBuscar = $request->idSucursal;
+    
+    $cont = contactosucursales::find($contBorrar)->delete();
+  
+    $contactos = contactosucursales::Where ('idSucursal','=',$contBuscar)->get();
+  
+    return view('detalle_Contactos')
+    ->with('contactos',$contactos);
+}
+
+  /* Finaliza funciones nuevas para Sucursales */
+
 }

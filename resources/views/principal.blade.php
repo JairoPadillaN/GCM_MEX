@@ -159,6 +159,9 @@ Website: http://www.webthemez.com/
                                     <li>
                                         <a href="{!! asset('consultaClientes') !!}">Consultar Clientes</a>
                                     </li>
+                                    <li>
+                                        <a href="{!! asset('consulta_Clientes') !!}">Consultar Clientes /* BETA */</a>
+                                    </li>
                                 </ul>
                             </li>
                             <li>
@@ -169,6 +172,9 @@ Website: http://www.webthemez.com/
                                     </li>
                                     <li>
                                         <a href="{!! asset('reporteSucursales') !!}">Consultar Sucursal</a>
+                                    </li>
+                                    <li>
+                                        <a href="{!! asset('reporte_Sucursales') !!}">Consultar Sucursal /* BETA */</a>
                                     </li>
                                 </ul>
                             </li>
@@ -688,6 +694,9 @@ Website: http://www.webthemez.com/
                                         <li>
                                             <a href="{!! asset('consultaClientes') !!}">Consultar Clientes</a>
                                         </li>
+                                        <li>
+                                            <a href="{!! asset('consulta_Clientes') !!}">Consultar Clientes /* BETA */</a>
+                                        </li>
                                     </ul>
                                 </li>
                         </li>
@@ -699,6 +708,9 @@ Website: http://www.webthemez.com/
                                 </li>
                                 <li>
                                     <a href="{!! asset('reporteSucursales') !!}">Consultar Sucursales</a>
+                                </li>
+                                <li>
+                                    <a href="{!! asset('reporte_Sucursales') !!}">Consultar Sucursal /* BETA */</a>
                                 </li>
                             </ul>
                         </li>

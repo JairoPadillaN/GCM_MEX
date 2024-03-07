@@ -341,6 +341,8 @@ public function altaClientes(){
 
     }
 
+    
+
     public function reporteClientesAbajo(Request $request){        
         $razonSocial = $request->razonSocial;
         $rfc = $request->rfc;
@@ -369,9 +371,187 @@ public function altaClientes(){
    }
 
 
+   /* Comienza reporte de clientes "Nuevo" */
 
+   public function consulta_Clientes(Request $request) {
+       $sname = Session::get('sesionname');
+       $sidu = Session::get('sesionidu');
+       $stipo = Session::get('sesiontipo');
 
+       if($sname == '' or $sidu =='' or $stipo=='')
+       {
+           Session::flash('error', 'Es necesario logearse antes de continuar');
+           return redirect()->route('login');
+       }
+       else
+       {           
+           $consulta = clientes::orderby('razonSocial','asc')->get();
+           
+           return view('consulta_Clientes')
+           ->with(['consulta'=>$consulta]);           
+           }
+        }
 
+        public function alta_Clientes(){
+            $sname = Session::get('sesionname');
+                $sidu = Session::get('sesionidu');
+                $stipo = Session::get('sesiontipo');
+        
+                if($sname == '' or $sidu =='' or $stipo=='')
+                {
+                    Session::flash('error', 'Es necesario logearse antes de continuar');
+                    return redirect()->route('login');
+                }
+                else
+                {
+
+        
+                 $clavequesig=clientes::orderby('idc','desc')
+                         ->take(1)
+                         ->get();
+                  return view ('alta_Clientes');
+
+        
+            }
+        }
+
+        public function eliminar_Clientes(Request $request)
+        {
+     
+             $idc = $request->idc;
+             clientes::destroy($idc);
+     
+             return redirect('consulta_Clientes')->with('status','Cliente eliminado correctamente.')->with('message','Cliente Eliminado Correctamente');
+        }
+
+        public function Guardar_Clientes(Request $request)
+        {
+    
+            $razonSocial=$request-> razonSocial;
+            $rfc=$request-> rfc;
+            $contacto=$request-> contacto;
+            $diasDePago=$request-> diasDePago;
+            $fechaDePago=$request-> fechaDePago;
+            $calle = $request-> calle;
+            $numeroProveedor = $request-> numeroProveedor;
+            $num = $request-> num;
+            $colonia = $request-> colonia;
+            $tipoCliente=$request-> tipoCliente;
+            $empresaPertenece=$request-> empresaPertenece;
+ 
+    
+    
+            $this->validate ($request,[
+            'razonSocial'=>['required'],
+            'rfc'=>['required'],
+            // 'sucursal'=>['required'],
+            'diasDePago'=>['required'],
+            'calle'=>['required'],
+            'num'=>['required'],
+            'tipoCliente'=>['required'],
+            'colonia'=>['required'],
+            ]);
+    
+    
+    
+            $cli= new clientes;
+            $cli-> idc=$request->idc;
+            $cli-> razonSocial=$request->razonSocial;
+            $cli-> rfc=$request->rfc;
+            $cli-> contacto=$request->contacto;
+            $cli-> fechaDePago=$request->fechaDePago;
+            $cli-> diasDePago=$request->diasDePago;
+            $cli-> calle=$request->calle;
+            $cli-> numeroProveedor=$request->numeroProveedor;
+            $cli-> num=$request->num;
+            $cli-> colonia=$request->colonia;
+            $cli-> estado=$request->estado;
+            $cli-> municipio=$request->municipio;
+            $cli-> tipoCliente=$request->tipoCliente;
+            $cli-> empresaPertenece=$request->empresaPertenece;
+
+    
+            $cli->save();
+    
+            return redirect()->route('consulta_Clientes')->with('success','Se ha agregado un nuevo Cliente')->with('message','El cliente ha seido agregado correctamente');
+        }
+
+        public function modifica_Clientes($idc){
+            $stipo = Session::get('sesiontipo');
+            $consulta = clientes::Where ('idc','=',$idc)->get();
+    
+            $seguimiento = \DB::select("SELECT sa.idSegActividad,sa.folio,  DATE_FORMAT(fechaCreacion,'%d %b %Y') AS fechaCreacionFormato, 
+                                    sa.asunto,u.idu, u.nombreUsuario, u.aPaterno, u.aMaterno, u.tipo, DATE_FORMAT(fechaInicio,'%d %b %Y') AS fechaInicioFormato,
+                                    DATE_FORMAT(fechaTermino,'%d %b %Y') AS fechaTerminoFormato,nombreActividad,
+                                    sa.importanciaSeguimiento, sa.activo, ar.nombreArea,CONCAT(c.razonSocial,' / ',s.sucursal) AS clienteSucursal
+                                    FROM seguimientoactividades AS sa
+                                    INNER JOIN usuarios AS u ON sa.idu = u.idu
+                                    INNER JOIN areas AS ar ON sa.idArea = ar.idArea
+                                    INNER JOIN sucursales AS s ON s.idSucursal= sa.idSucursal
+                                    INNER JOIN clientes AS c ON c.idc= sa.idc
+                                    INNER JOIN actividades AS act ON act.idActividad= sa.idActividad
+                                    WHERE c.idc=?
+                                    ORDER BY idSegActividad DESC",[$idc]);
+            
+                                    
+            $cuantos=count($seguimiento);
+    
+            // $consulta = clientes::orderby('razonSocial','asc')->get();
+            return view('edita_Clientes')
+            // ->with('atendidoPor',$atendidoPor[0])
+            ->with('cuantos',$cuantos)
+            ->with('seguimiento',$seguimiento)
+            ->with('stipo',$stipo)
+            ->with('consulta',$consulta[0]);
+    
+        }
+
+        public function modifica_Clientes2(Request $request)
+        {
+    
+            $idc=$request-> idc;
+            $razonSocial=$request-> razonSocial;
+            $rfc=$request-> rfc;
+            $contacto=$request-> contacto;
+            $diasDePago=$request-> diasDePago;
+            $fechaDePago=$request-> fechaDePago;
+            $calle = $request-> calle;
+            $numeroProveedor = $request-> numeroProveedor;
+            $num = $request-> num;
+            $colonia = $request-> colonia;
+            $tipoCliente=$request-> tipoCliente;
+            $empresaPertenece=$request-> empresaPertenece;
+    
+            $this->validate ($request,[
+            'razonSocial'=>['required'],
+            'contacto'=>['required'],
+            'diasDePago'=>['required'],
+            'calle'=>['required'],
+            'rfc'=>['required'],
+            'num'=>['required'],
+            'colonia'=>['required'],
+            ]);
+    
+            $clie = clientes::find($idc);
+            $clie-> idc = $request-> idc;
+            $clie->razonSocial=$request->razonSocial;
+            $clie->rfc=$request->rfc;
+            $clie->contacto=$request->contacto;
+            $clie->diasDePago=$request->diasDePago;
+            $clie->calle=$request->calle;
+            $clie->numeroProveedor=$request->numeroProveedor;
+            $clie->num=$request->num;
+            $clie->colonia=$request->colonia;
+            $clie->tipoCliente=$request->tipoCliente;
+            $clie->empresaPertenece=$request->empresaPertenece;
+
+    
+            $clie->save();
+            return redirect()->route('consulta_Clientes')->with('success','Se han modificado los datos del Cliente')->with('message','Se han modificado los datos del Cliente correctamente');
+    
+        }
+
+   /* Termina reporte de clientes "Nuevo" */
 
 
 

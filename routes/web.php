@@ -169,6 +169,14 @@ Route::get('reporteClientesAbajo','ClientesController@reporteClientesAbajo')->na
 Route::get('eliminarClientes','ClientesController@eliminarClientes')->name('eliminarClientes');
 Route::get('modificaClientes/{idc}','ClientesController@modificaClientes')->name('modificaClientes');
 Route::POST('modificaClientes2','ClientesController@modificaClientes2')->name('modificaClientes2');
+//-----------CRUD Clientes nuevo -------------
+Route::get('consulta_Clientes', 'ClientesController@consulta_Clientes')->name('consulta_Clientes');
+Route::get('eliminar_Clientes','ClientesController@eliminar_Clientes')->name('eliminar_Clientes');
+Route::get('alta_Clientes','ClientesController@alta_Clientes')->name('alta_Clientes');
+Route::POST('Guardar_Clientes','ClientesController@Guardar_Clientes')->name('Guardar_Clientes');
+Route::get('modifica_Clientes/{idc}','ClientesController@modifica_Clientes')->name('modifica_Clientes');
+Route::POST('modifica_Clientes2','ClientesController@modifica_Clientes2')->name('modifica_Clientes2');
+
 // REPORTE RECEPCION DE EQUIPOS 
 Route::get('reporteEquiposServicios','ReporteRecepciondeEquipoController@reporteEquiposServicios')->name('reporteEquiposServicios');
 Route::get('dataReporteEquiposServicios','ReporteRecepciondeEquipoController@dataReporteEquiposServicios')->name('dataReporteEquiposServicios');
@@ -193,7 +201,16 @@ Route::get('modificarSucursales/{idSucursal}','SucursalesController@modificarSuc
 Route::get('restaurarSucursales/{idSucursal}','SucursalesController@restaurarSucursales')->name('restaurarSucursales');
 Route::get('contactoSuc','SucursalesController@contactoSuc')->name('contactoSuc');
 Route::get('borrarCont','SucursalesController@borrarCont')->name('borrarCont');
-
+//-----------CRUD Sucursales *Nuevo*
+Route::get('reporte_Sucursales','SucursalesController@reporte_Sucursales')->name('reporte_Sucursales');
+Route::get('alta_Sucursales','SucursalesController@alta_Sucursales')->name('alta_Sucursales');
+Route::POST('Guardar_Sucursales','SucursalesController@Guardar_Sucursales')->name('Guardar_Sucursales');
+Route::get('modificar_Sucursales/{idSucursal}','SucursalesController@modificar_Sucursales')->name('modificar_Sucursales');
+Route::POST('editar_Sucursales','SucursalesController@editar_Sucursales')->name('editar_Sucursales');
+Route::get('eliminar_Sucursales/{idSucursal}','SucursalesController@eliminar_Sucursales')->name('eliminar_Sucursales');
+Route::get('restaurar_Sucursales/{idSucursal}','SucursalesController@restaurar_Sucursales')->name('restaurar_Sucursales');
+Route::get('contacto_Suc','SucursalesController@contacto_Suc')->name('contacto_Suc');
+Route::get('borrar_Cont','SucursalesController@borrar_Cont')->name('borrar_Cont');
 
 Route::get('reporteAbiertasPrueba','SucursalesController@reporteAbiertasPrueba')->name('reporteAbiertasPrueba');
 Route::get('reporteCerradasPrueba','SucursalesController@reporteCerradasPrueba')->name('reporteCerradasPrueba');
