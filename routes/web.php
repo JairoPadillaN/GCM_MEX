@@ -314,6 +314,28 @@ Route::get('comboca','ViajesController@comboca')->name('comboca');
 Route::get('asignarServicioAviaje','ViajesController@asignarServicioAviaje')->name('asignarServicioAviaje');
 Route::get('eliminarServicioAviaje','ViajesController@eliminarServicioAviaje')->name('eliminarServicioAviaje');
 
+/* CRUD Viajes Nuevo */
+//reporte de viajes
+Route::get('reporte_Viajes','ViajesController@reporte_Viajes')->name('reporte_Viajes');
+//Creación de Viajes
+Route::get('altaSalida_Viajes','ViajesController@altaSalida_Viajes')->name('altaSalida_Viajes');
+Route::POST('GuardarSalida_Viajes','ViajesController@GuardarSalida_Viajes')->name('GuardarSalida_Viajes');
+//Finalizar viaje
+Route::get('altaRegreso_Viajes/{idViaje}','ViajesController@altaRegreso_Viajes')->name('altaRegreso_Viajes');
+Route::POST('GuardarRegreso_Viajes','ViajesController@GuardarRegreso_Viajes')->name('GuardarRegreso_Viajes');
+//Detalle del viaje
+Route::get('detalle_Viajes/{idViaje}','ViajesController@detalle_Viajes')->name('detalle_Viajes');
+//Editar datos del viaje FINALIZADO
+Route::get('modificar_Viajes/{idViaje}','ViajesController@modificar_Viajes')->name('modificar_Viajes');
+Route::POST('editar_Viajes','ViajesController@editar_Viajes')->name('editar_Viajes');
+Route::get('comboca_','ViajesController@comboca_')->name('comboca_');
+Route::get('asignarServicioA_viaje','ViajesController@asignarServicioA_viaje')->name('asignarServicioA_viaje');
+// Editar datos de viaje EN CURSO
+Route::get('modificarSalida_Viajes/{idViaje}','ViajesController@modificarSalida_Viajes')->name('modificarSalida_Viajes');
+Route::POST('editarSalida_Viajes','ViajesController@editarSalida_Viajes')->name('editarSalida_Viajes');
+//Eliminar y Restaurar viaje
+Route::get('eliminarSalida_Viajes/{idViaje}','ViajesController@eliminarSalida_Viajes')->name('eliminarSalida_Viajes');
+Route::get('restaurarSalida_Viajes/{idViaje}','ViajesController@restaurarSalida_Viajes')->name('restaurarSalida_Viajes');
 
 ////////FACTURAS
 

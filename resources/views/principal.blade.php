@@ -339,6 +339,7 @@ Website: http://www.webthemez.com/
                             <li>
                                 <a href="{!! asset('altaSalidaViajes') !!}">Nuevo Viaje</a>
                                 <a href="{!! asset('reporteViajes') !!}">Consultar Viajes</a>
+                                <a href="{!! asset('reporte_Viajes') !!}">Consultar Viajes /* BETA */</a>
                             </li>
                     </li>
                 </ul>
@@ -795,6 +796,7 @@ Website: http://www.webthemez.com/
                         <li>
                             <a href="{!! asset('altaSalidaViajes') !!}">Nuevo Viaje</a>
                             <a href="{!! asset('reporteViajes') !!}">Consultar Viajes</a>
+                            <a href="{!! asset('reporte_Viajes') !!}">Consultar Viajes /* BETA */</a>
                         </li>
                     </ul>
                 </li>
@@ -1047,6 +1049,7 @@ Website: http://www.webthemez.com/
                             <li>
                                 <a href="{!! asset('altaSalidaViajes') !!}">Nuevo Viaje</a>
                                 <a href="{!! asset('reporteViajes') !!}">Consultar Viajes</a>
+                                <a href="{!! asset('reporte_Viajes') !!}">Consultar Viajes /* BETA */</a>
                             </li>
                         </ul>
                     </li>
@@ -1101,6 +1104,7 @@ Website: http://www.webthemez.com/
                             <li>
                                 <a href="{!! asset('altaSalidaViajes') !!}">Nuevo Viaje</a>
                                 <a href="{!! asset('reporteViajes') !!}">Consultar Viajes</a>
+                                <a href="{!! asset('reporte_Viajes') !!}">Consultar Viajes /* BETA */</a>
                             </li>
                         </ul>
                     </li>
@@ -1533,6 +1537,7 @@ Website: http://www.webthemez.com/
                             <li>
                                 <a href="{!! asset('altaSalidaViajes') !!}">Nuevo Viaje</a>
                                 <a href="{!! asset('reporteViajes') !!}">Consultar Viajes</a>
+                                <a href="{!! asset('reporte_Viajes') !!}">Consultar Viajes /* BETA */</a>
                             </li>
                         </ul>
                     </li>                    
